@@ -12,9 +12,11 @@ repositories {
 //todo configuration
 dependencies {
     implementation 'com.google.guava:guava:33.0.0-jre'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0'
+    implementation 'com.google.dagger:dagger:2.50'
     implementation 'org.slf4j:slf4j-api:2.0.9'
 
 
