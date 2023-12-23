@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d21d4cb-9e3e-49ff-b8de-833700d08135" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/ClusterMetricClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/ConfluentCloudMetricClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/MetricBody.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/MetricDataItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/MetricType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.4/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.4/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.4/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/sha1-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codestream.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codestream.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/ClusterMetricService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/ConfluentCloudMetricService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/clustermetrics/MetricInformation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
@@ -49,10 +41,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Record" />
-        <option value="Class" />
         <option value="Enum" />
         <option value="Interface" />
+        <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>

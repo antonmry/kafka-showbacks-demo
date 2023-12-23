@@ -18,6 +18,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0'
     implementation 'com.google.dagger:dagger:2.50'
     implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
