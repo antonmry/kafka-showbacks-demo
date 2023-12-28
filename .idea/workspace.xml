@@ -5,13 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d21d4cb-9e3e-49ff-b8de-833700d08135" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/serviceaccount/ConfluentCloudServiceAccountCache.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/serviceaccount/ConfluentCloudServiceAccountClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/serviceaccount/ConfluentCloudServiceAccountDataItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/serviceaccount/ConfluentCloudServiceAccountMetadata.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/serviceaccount/ConfluentCloudServiceAccountResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/serviceaccount/ServiceAccountClusterInformation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codestream.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codestream.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/KafkaShowBacksDemoModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/KafkaShowBacksDemoModule.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/configuration/KafkaShowBacksDemoConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kafka/showbacks/demo/configuration/KafkaShowBacksDemoConfiguration.java" afterDir="false" />
