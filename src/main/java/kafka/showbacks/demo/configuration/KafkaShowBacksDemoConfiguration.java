@@ -18,6 +18,9 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 	@JsonProperty("telemetryUrl")
 	private String telemetryUrl;
 
+	@JsonProperty("cacheExpiredInHours")
+	private int cacheExpiredInHours;
+
 	public String getConfluentApiKey() {
 		return confluentApiKey;
 	}
@@ -34,4 +37,7 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 		return telemetryUrl;
 	}
 
+	public int getCacheExpiredInHours() {
+		return cacheExpiredInHours;
+	}
 }
