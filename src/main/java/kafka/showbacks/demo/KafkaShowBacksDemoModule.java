@@ -13,7 +13,7 @@ import kafka.showbacks.demo.serviceaccount.ConfluentCloudServiceAccountClient;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-public class KafkaShowBacksDemoModule {
+public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton

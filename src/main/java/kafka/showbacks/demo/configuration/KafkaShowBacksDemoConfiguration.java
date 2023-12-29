@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.core.Configuration;
 
 //todo different configurations class
+//todo records
 public final class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	@JsonProperty("confluentApiKey")
