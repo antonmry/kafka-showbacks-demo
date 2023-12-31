@@ -1,4 +1,4 @@
-package kafka.showbacks.demo.serviceaccount;
+package kafka.showbacks.demo.clouddata;
 
 import com.google.common.base.Joiner;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
@@ -10,30 +10,31 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.net.http.HttpRequest;
-import java.util.HashSet;
 import java.util.Set;
 
-public class ConfluentCloudServiceAccountClient extends AbstractServiceClient {
+//todo add filter by cluster in both
+public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 
-	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceAccountClient.class);
+	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceClient.class);
 
 	private static final String QUERY_PARAMETER_MAX_PAGE_SIZE = "?page_size=100";
 
 	private final String cloudUrl;
 
 	@Inject
-	public ConfluentCloudServiceAccountClient(final String confluentAPIKey,
-	                                          final String confluentAPISecret,
-	                                          final int durationInSeconds,
-	                                          final String cloudUrl,
-	                                          final RetryOnError retryOnError) {
+	public ConfluentCloudServiceClient(final String confluentAPIKey,
+	                                   final String confluentAPISecret,
+	                                   final int durationInSeconds,
+	                                   final String cloudUrl,
+	                                   final RetryOnError retryOnError) {
 		super(durationInSeconds, retryOnError);
 		super.addHeader(BASIC_AUTHORIZATION_HEADER, getBasicAuthenticationHeader(confluentAPIKey, confluentAPISecret),
 				BASIC_CONTENT_TYPE_KEY_HEADER, BASIC_CONTENT_TYPE_VALUE_HEADER);
 		this.cloudUrl = cloudUrl;
 	}
 
-	Set<ConfluentCloudServiceAccountDataItem> getServiceAccountClients() throws KafkaShowBackDemoException {
+	//todo create interface
+	public <T> void fillCollectionFromConfluentCloudServiceClient(Set<T> collectionResult) throws KafkaShowBackDemoException {
 		if (StringUtils.isEmpty(this.cloudUrl)) {
 			throw new KafkaShowBackDemoException("The cloudUrl parameter can not be null");
 		}
@@ -42,7 +43,8 @@ public class ConfluentCloudServiceAccountClient extends AbstractServiceClient {
 
 		log.info("Recovering all service accounts for Confluent Cloud environment");
 
-		final Set<ConfluentCloudServiceAccountDataItem> confluentCloudServiceAccountDataItems = new HashSet<>();
+		//todo ini in another place
+		//collectionResult = new ArrayList<>() {};
 
 		while (!StringUtils.isEmpty(temporalCloudUrl)) {
 			final HttpRequest httpRequest = createRequestGETBuilder(temporalCloudUrl);
@@ -51,10 +53,10 @@ public class ConfluentCloudServiceAccountClient extends AbstractServiceClient {
 			final String httpResponse = getHttpResponse(httpRequest).
 					orElseThrow(() -> new KafkaShowBackDemoException("The call to get the services account return an empty answer."));
 
-			final ConfluentCloudServiceAccountResponse result = mapJsonStringToObjectResponse(ConfluentCloudServiceAccountResponse.class, httpResponse);
+			final ConfluentCloudServiceResponse result = mapJsonStringToObjectResponse(ConfluentCloudServiceResponse.class, httpResponse);
 
 			if (result.hasData()) {
-				confluentCloudServiceAccountDataItems.addAll(result.getData());
+				collectionResult.addAll(result.getData());
 			}
 
 			if (result.hasNextPages()) {
@@ -65,8 +67,6 @@ public class ConfluentCloudServiceAccountClient extends AbstractServiceClient {
 
 		}
 
-		return confluentCloudServiceAccountDataItems;
 	}
-
 
 }

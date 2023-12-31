@@ -1,14 +1,16 @@
-package kafka.showbacks.demo.serviceaccount;
+package kafka.showbacks.demo.clouddata.serviceaccount;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
+import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -21,12 +23,12 @@ public class ConfluentCloudServiceAccountCache {
 
 	private static final Pattern pattern = Pattern.compile("Service account for the (.*?),(.*?),(.*?) application");
 
-	private final ConfluentCloudServiceAccountClient confluentCloudServiceAccountClient;
+	private final ConfluentCloudServiceClient confluentCloudServiceAccountClient;
 
 	private final Cache<Boolean, Map<String, ServiceAccountClusterInformation>> serviceAccountInformationCache;
 
 	@Inject
-	public ConfluentCloudServiceAccountCache(final ConfluentCloudServiceAccountClient confluentCloudServiceAccountClient,
+	public ConfluentCloudServiceAccountCache(final ConfluentCloudServiceClient confluentCloudServiceAccountClient,
 	                                         final int cacheExpiredInHours) {
 		this.confluentCloudServiceAccountClient = confluentCloudServiceAccountClient;
 		this.serviceAccountInformationCache = Caffeine.newBuilder()
@@ -47,7 +49,8 @@ public class ConfluentCloudServiceAccountCache {
 		log.info("The cache with the service account and cluster information is empty.");
 
 		try {
-			final Set<ConfluentCloudServiceAccountDataItem> confluentCloudServiceAccountDataItems = confluentCloudServiceAccountClient.getServiceAccountClients();
+			final Set<ConfluentCloudServiceAccountDataItem> confluentCloudServiceAccountDataItems = new HashSet<>();
+			confluentCloudServiceAccountClient.fillCollectionFromConfluentCloudServiceClient(confluentCloudServiceAccountDataItems);
 
 			if (confluentCloudServiceAccountDataItems.isEmpty()) {
 				throw new KafkaShowBackDemoException("It has not been possible to recover the Services accounts. Review if the rest endpoint is working correctly.");

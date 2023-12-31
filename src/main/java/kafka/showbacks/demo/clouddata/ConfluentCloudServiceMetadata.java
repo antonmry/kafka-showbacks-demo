@@ -1,8 +1,8 @@
-package kafka.showbacks.demo.serviceaccount;
+package kafka.showbacks.demo.clouddata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-class ConfluentCloudServiceAccountMetadata {
+class ConfluentCloudServiceMetadata {
 	@JsonProperty("next")
 	private String next;
 

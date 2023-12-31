@@ -1,14 +1,9 @@
-package kafka.showbacks.demo.serviceaccount;
+package kafka.showbacks.demo.clouddata.serviceaccount;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+//todo change to record
 class ConfluentCloudServiceAccountDataItem {
-
-	@JsonProperty("metadata")
-	private ConfluentCloudServiceAccountMetadata metadata;
-
-	@JsonProperty("kind")
-	private String kind;
 
 	@JsonProperty("description")
 	private String description;
@@ -16,19 +11,8 @@ class ConfluentCloudServiceAccountDataItem {
 	@JsonProperty("id")
 	private String id;
 
-	@JsonProperty("api_version")
-	private String apiVersion;
-
 	@JsonProperty("display_name")
 	private String displayName;
-
-	ConfluentCloudServiceAccountMetadata getMetadata() {
-		return metadata;
-	}
-
-	String getKind() {
-		return kind;
-	}
 
 	String getDescription() {
 		return description;
@@ -36,10 +20,6 @@ class ConfluentCloudServiceAccountDataItem {
 
 	String getId() {
 		return id;
-	}
-
-	String getApiVersion() {
-		return apiVersion;
 	}
 
 	String getDisplayName() {

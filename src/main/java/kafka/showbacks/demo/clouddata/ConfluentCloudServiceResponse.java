@@ -1,16 +1,16 @@
-package kafka.showbacks.demo.serviceaccount;
+package kafka.showbacks.demo.clouddata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kafka.showbacks.demo.common.rest.ResponseObject;
 
 import java.util.List;
 
-class ConfluentCloudServiceAccountResponse implements ResponseObject {
+class ConfluentCloudServiceResponse<T> implements ResponseObject {
 	@JsonProperty("metadata")
-	private ConfluentCloudServiceAccountMetadata metadata;
+	private ConfluentCloudServiceMetadata metadata;
 
 	@JsonProperty("data")
-	private List<ConfluentCloudServiceAccountDataItem> data;
+	private List<T> data;
 
 	@JsonProperty("kind")
 	private String kind;
@@ -18,11 +18,11 @@ class ConfluentCloudServiceAccountResponse implements ResponseObject {
 	@JsonProperty("api_version")
 	private String apiVersion;
 
-	ConfluentCloudServiceAccountMetadata getMetadata() {
+	ConfluentCloudServiceMetadata getMetadata() {
 		return metadata;
 	}
 
-	List<ConfluentCloudServiceAccountDataItem> getData() {
+	List<T> getData() {
 		return data;
 	}
 
