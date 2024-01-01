@@ -1,6 +1,5 @@
 package kafka.showbacks.demo.clouddata;
 
-import com.google.common.base.Joiner;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.rest.AbstractServiceClient;
 import kafka.showbacks.demo.common.rest.RetryOnError;
@@ -17,41 +16,30 @@ public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 
 	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceClient.class);
 
-	private static final String QUERY_PARAMETER_MAX_PAGE_SIZE = "?page_size=100";
-
-	private final String cloudUrl;
-
 	@Inject
 	public ConfluentCloudServiceClient(final String confluentAPIKey,
 	                                   final String confluentAPISecret,
 	                                   final int durationInSeconds,
-	                                   final String cloudUrl,
 	                                   final RetryOnError retryOnError) {
 		super(durationInSeconds, retryOnError);
 		super.addHeader(BASIC_AUTHORIZATION_HEADER, getBasicAuthenticationHeader(confluentAPIKey, confluentAPISecret),
 				BASIC_CONTENT_TYPE_KEY_HEADER, BASIC_CONTENT_TYPE_VALUE_HEADER);
-		this.cloudUrl = cloudUrl;
 	}
 
 	//todo create interface
-	public <T> void fillCollectionFromConfluentCloudServiceClient(Set<T> collectionResult) throws KafkaShowBackDemoException {
-		if (StringUtils.isEmpty(this.cloudUrl)) {
+	public <T> void fillCollectionFromConfluentCloudServiceClient(final Set<T> collectionResult, String cloudUrl) throws KafkaShowBackDemoException {
+		if (StringUtils.isEmpty(cloudUrl)) {
 			throw new KafkaShowBackDemoException("The cloudUrl parameter can not be null");
 		}
 
-		String temporalCloudUrl = Joiner.on("").join(this.cloudUrl, QUERY_PARAMETER_MAX_PAGE_SIZE);
-
 		log.info("Recovering all service accounts for Confluent Cloud environment");
 
-		//todo ini in another place
-		//collectionResult = new ArrayList<>() {};
-
-		while (!StringUtils.isEmpty(temporalCloudUrl)) {
-			final HttpRequest httpRequest = createRequestGETBuilder(temporalCloudUrl);
-			temporalCloudUrl = StringUtils.EMPTY;
+		while (!StringUtils.isEmpty(cloudUrl)) {
+			final HttpRequest httpRequest = createRequestGETBuilder(cloudUrl);
+			cloudUrl = StringUtils.EMPTY;
 
 			final String httpResponse = getHttpResponse(httpRequest).
-					orElseThrow(() -> new KafkaShowBackDemoException("The call to get the services account return an empty answer."));
+					orElseThrow(() -> new KafkaShowBackDemoException("The call to fill the collection from cloud API return an empty answer."));
 
 			final ConfluentCloudServiceResponse result = mapJsonStringToObjectResponse(ConfluentCloudServiceResponse.class, httpResponse);
 
@@ -60,9 +48,9 @@ public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 			}
 
 			if (result.hasNextPages()) {
-				temporalCloudUrl = result.getMetadata().getNext();
+				cloudUrl = result.getMetadata().getNext();
 
-				log.info("The query to get the service account return more than one page");
+				log.info("The query to fill the collection from cloud API return more than one page");
 			}
 
 		}

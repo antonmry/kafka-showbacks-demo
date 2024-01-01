@@ -19,8 +19,11 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 	@JsonProperty("telemetryUrl")
 	private String telemetryUrl;
 
-	@JsonProperty("cloudUrl")
-	private String cloudUrl;
+	@JsonProperty("cloudBillingUrl")
+	private String cloudBillingUrl;
+
+	@JsonProperty("cloudServiceAccountUrl")
+	private String cloudServiceAccountUrl;
 
 	@JsonProperty("cacheExpiredInHours")
 	private int cacheExpiredInHours;
@@ -45,7 +48,11 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 		return cacheExpiredInHours;
 	}
 
-	public String getCloudUrl() {
-		return cloudUrl;
+	public String getCloudBillingUrl() {
+		return cloudBillingUrl;
+	}
+
+	public String getCloudServiceAccountUrl() {
+		return cloudServiceAccountUrl;
 	}
 }

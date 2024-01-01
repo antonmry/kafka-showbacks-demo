@@ -2,6 +2,7 @@ package kafka.showbacks.demo;
 
 import dagger.Provides;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
+import kafka.showbacks.demo.clouddata.billing.ConfluentCloudCostService;
 import kafka.showbacks.demo.clouddata.serviceaccount.ConfluentCloudServiceAccountCache;
 import kafka.showbacks.demo.clustermetrics.ClusterMetricClient;
 import kafka.showbacks.demo.clustermetrics.ClusterMetricService;
@@ -34,14 +35,20 @@ public interface KafkaShowBacksDemoModule {
 	@Singleton
 	static ConfluentCloudServiceAccountCache confluentServiceAccountSupplier(final ConfluentCloudServiceClient confluentServiceAccountClient,
 	                                                                         final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
-		return new ConfluentCloudServiceAccountCache(confluentServiceAccountClient, kafkaShowBacksDemoConfiguration.getCacheExpiredInHours());
+		return new ConfluentCloudServiceAccountCache(confluentServiceAccountClient, kafkaShowBacksDemoConfiguration.getCacheExpiredInHours(), kafkaShowBacksDemoConfiguration.getCloudServiceAccountUrl());
 	}
 
 	@Provides
 	@Singleton
 	static ConfluentCloudServiceClient confluentServiceAccountClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
 		return new ConfluentCloudServiceClient(kafkaShowBacksDemoConfiguration.getConfluentApiKey(), kafkaShowBacksDemoConfiguration.getConfluentApiSecret(),
-				kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoConfiguration.getCloudUrl(), retryOnError);
+				kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), retryOnError);
 	}
-	
+
+	@Provides
+	@Singleton
+	static ConfluentCloudCostService confluentCloudCostService(final ConfluentCloudServiceClient confluentCloudServiceClient,
+	                                                           final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
+		return new ConfluentCloudCostService(confluentCloudServiceClient, kafkaShowBacksDemoConfiguration.getCloudBillingUrl());
+	}
 }

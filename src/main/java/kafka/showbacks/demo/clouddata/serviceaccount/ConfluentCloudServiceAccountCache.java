@@ -2,6 +2,7 @@ package kafka.showbacks.demo.clouddata.serviceaccount;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
@@ -27,13 +28,21 @@ public class ConfluentCloudServiceAccountCache {
 
 	private final Cache<Boolean, Map<String, ServiceAccountClusterInformation>> serviceAccountInformationCache;
 
+	private final String serviceAccountCloudUrl;
+
+	//todo ...
+	private static final String QUERY_PARAMETER_MAX_PAGE_SIZE = "?page_size=100";
+
+
 	@Inject
 	public ConfluentCloudServiceAccountCache(final ConfluentCloudServiceClient confluentCloudServiceAccountClient,
-	                                         final int cacheExpiredInHours) {
+	                                         final int cacheExpiredInHours,
+	                                         final String serviceAccountCloudUrl) {
 		this.confluentCloudServiceAccountClient = confluentCloudServiceAccountClient;
 		this.serviceAccountInformationCache = Caffeine.newBuilder()
 				.expireAfterWrite(cacheExpiredInHours, TimeUnit.HOURS)
 				.build();
+		this.serviceAccountCloudUrl = Joiner.on("").join(serviceAccountCloudUrl, QUERY_PARAMETER_MAX_PAGE_SIZE);
 	}
 
 	public ImmutableMap<String, ServiceAccountClusterInformation> getServiceAccountInformation() throws KafkaShowBackDemoException {
@@ -50,7 +59,7 @@ public class ConfluentCloudServiceAccountCache {
 
 		try {
 			final Set<ConfluentCloudServiceAccountDataItem> confluentCloudServiceAccountDataItems = new HashSet<>();
-			confluentCloudServiceAccountClient.fillCollectionFromConfluentCloudServiceClient(confluentCloudServiceAccountDataItems);
+			confluentCloudServiceAccountClient.fillCollectionFromConfluentCloudServiceClient(confluentCloudServiceAccountDataItems, serviceAccountCloudUrl);
 
 			if (confluentCloudServiceAccountDataItems.isEmpty()) {
 				throw new KafkaShowBackDemoException("It has not been possible to recover the Services accounts. Review if the rest endpoint is working correctly.");
