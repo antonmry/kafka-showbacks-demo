@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 //todo log level
 //todo exceptions register
 //todo warnings
-//todo cache...
+//todo cache... take into accounts dates
 public final class ConfluentCloudCostService {
 
 	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudCostService.class);
@@ -36,7 +36,7 @@ public final class ConfluentCloudCostService {
 	}
 
 	//todo cluster??
-	Set<ClusterCostData> getCostDataByTimeRange(final Date startDate, final Date endDate) throws KafkaShowBackDemoException {
+	public Set<ClusterCostData> getCostDataByTimeRange(final Date startDate, final Date endDate) throws KafkaShowBackDemoException {
 		//todo how to send parameters
 		log.info("Getting cost by time range and cluster");
 		final String urlWithRangeTime = Joiner.on("").join(billingCloudUrl, String.format(QUERY_PARAMETER_MAX_PAGE_SIZE, startDate, endDate));

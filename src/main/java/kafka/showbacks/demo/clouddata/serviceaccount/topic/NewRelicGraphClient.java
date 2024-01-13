@@ -27,10 +27,10 @@ public final class NewRelicGraphClient extends AbstractServiceClient {
 
 	private final String nrGraphUrl;
 
-	public NewRelicGraphClient(final int requestTimeOutInSeconds,
+	public NewRelicGraphClient(final RetryOnError retryOnError,
+	                           final int requestTimeOutInSeconds,
 	                           final String nrGraphUrl,
-	                           final String apiKey,
-	                           final RetryOnError retryOnError) {
+	                           final String apiKey) {
 		super(requestTimeOutInSeconds, retryOnError);
 		super.addHeader(HEADER_API_KEY, apiKey, BASIC_CONTENT_TYPE_KEY_HEADER, BASIC_CONTENT_TYPE_VALUE_HEADER);
 		this.nrGraphUrl = nrGraphUrl;
