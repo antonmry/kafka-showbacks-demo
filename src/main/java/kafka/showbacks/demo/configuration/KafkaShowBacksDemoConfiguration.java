@@ -5,6 +5,7 @@ import io.dropwizard.core.Configuration;
 
 //todo different configurations class
 //todo records
+//todo Configuratoions class is not needed /neither json records...
 public final class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	@JsonProperty("confluentApiKey")
@@ -27,6 +28,15 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	@JsonProperty("cacheExpiredInHours")
 	private int cacheExpiredInHours;
+
+	@JsonProperty("newRelicAccountId")
+	private String newRelicAccountId;
+
+	@JsonProperty("newRelicGraphUrl")
+	private String newRelicGraphUrl;
+
+	@JsonProperty("newRelicApiKey")
+	private String newRelicApiKey;
 
 	public String getConfluentApiKey() {
 		return confluentApiKey;
@@ -54,5 +64,17 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	public String getCloudServiceAccountUrl() {
 		return cloudServiceAccountUrl;
+	}
+
+	public String getNewRelicAccountId() {
+		return newRelicAccountId;
+	}
+
+	public String getNewRelicGraphUrl() {
+		return newRelicGraphUrl;
+	}
+
+	public String getNewRelicApiKey() {
+		return newRelicApiKey;
 	}
 }

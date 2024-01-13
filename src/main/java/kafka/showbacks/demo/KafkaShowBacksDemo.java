@@ -17,9 +17,10 @@ import java.util.Set;
 public interface KafkaShowBacksDemo {
 	/**
 	 * Return the billing data of Confluent extracted from Confluent API.
-	 * Currently this information just can be obtained by complete days.
+	 * Currently this information just can be obtained by complete days and it's not possible
+	 * filter by cluster.
 	 */
-	Set<ClusterCostData> getCostDataByDate(final Date startDate, final Date endDate);
+	Set<ClusterCostData> getCostDataByDate(final Date startDate, final Date endDate) throws KafkaShowBackDemoException; //todo now here will see if we should change it
 
 	/**
 	 * Return the calculated cost by team taking during the time range sent

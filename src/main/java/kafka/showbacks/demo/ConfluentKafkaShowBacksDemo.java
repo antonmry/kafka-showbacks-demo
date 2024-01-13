@@ -1,6 +1,7 @@
 package kafka.showbacks.demo;
 
 import com.google.common.collect.ImmutableMap;
+import kafka.showbacks.demo.clouddata.billing.ConfluentCloudCostService;
 import kafka.showbacks.demo.clouddata.serviceaccount.ConfluentCloudServiceAccountCache;
 import kafka.showbacks.demo.clouddata.serviceaccount.ServiceAccountClusterInformation;
 import kafka.showbacks.demo.clouddata.serviceaccount.topic.ServiceAccountTopic;
@@ -39,6 +40,7 @@ import static kafka.showbacks.demo.common.BigDecimalOperations.multiply;
 import static kafka.showbacks.demo.common.BigDecimalOperations.subtract;
 
 //todo big class refactor
+//todo number classes study
 public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 
 	private static final Logger log = LoggerFactory.getLogger(ConfluentKafkaShowBacksDemo.class);
@@ -65,14 +67,17 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 	private final ClusterMetricService confluentCloudMetricService;
 	private final ConfluentCloudServiceAccountCache confluentServiceAccountCache;
 	private final ServiceAccountTopic diracServiceAccountTopicService;
+	private final ConfluentCloudCostService confluentCloudCostService;
 
 	@Inject
 	ConfluentKafkaShowBacksDemo(final ClusterMetricService confluentCloudMetricService,
 	                            final ConfluentCloudServiceAccountCache confluentServiceAccountCache,
+	                            final ConfluentCloudCostService confluentCloudCostService,
 	                            final ServiceAccountTopic diracServiceAccountTopicService) {
 		this.confluentCloudMetricService = confluentCloudMetricService;
 		this.confluentServiceAccountCache = confluentServiceAccountCache;
 		this.diracServiceAccountTopicService = diracServiceAccountTopicService;
+		this.confluentCloudCostService = confluentCloudCostService;
 
 		this.responseByUsersAccountsGroupByStartTime = new HashMap<>();
 		this.requestByUsersAccountsGroupByStartTime = new HashMap<>();
@@ -82,8 +87,8 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 	}
 
 	@Override
-	public Set<ClusterCostData> getCostDataByDate(Date startDate, Date endDate) {
-		return null;
+	public Set<ClusterCostData> getCostDataByDate(final Date startDate, final Date endDate) throws KafkaShowBackDemoException {
+		return this.confluentCloudCostService.getCostDataByTimeRange(startDate, endDate);
 	}
 
 	@Override

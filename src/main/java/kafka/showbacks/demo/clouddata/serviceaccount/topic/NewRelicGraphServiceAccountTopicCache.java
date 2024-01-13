@@ -36,8 +36,8 @@ public final class NewRelicGraphServiceAccountTopicCache implements ServiceAccou
 
 	//todo accountid here
 	@Inject
-	public NewRelicGraphServiceAccountTopicCache(final int cacheExpiredInHours,
-	                                             final NewRelicGraphClient newRelicGraphClient,
+	public NewRelicGraphServiceAccountTopicCache(final NewRelicGraphClient newRelicGraphClient,
+	                                             final int cacheExpiredInHours,
 	                                             final String newRelicAccountId) {
 
 		this.newRelicGraphClient = newRelicGraphClient;
