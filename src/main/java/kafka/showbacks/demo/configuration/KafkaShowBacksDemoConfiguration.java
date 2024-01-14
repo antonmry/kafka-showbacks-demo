@@ -38,6 +38,12 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 	@JsonProperty("newRelicApiKey")
 	private String newRelicApiKey;
 
+	@JsonProperty(value = "numRequestRetries", defaultValue = "3")
+	private int numRequestRetries;
+
+	@JsonProperty(value = "timeToRetryRequestCallMs", defaultValue = "2000")
+	private int timeToRetryRequestCallMs;
+
 	public String getConfluentApiKey() {
 		return confluentApiKey;
 	}
@@ -76,5 +82,13 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	public String getNewRelicApiKey() {
 		return newRelicApiKey;
+	}
+
+	public int getNumRequestRetries() {
+		return numRequestRetries;
+	}
+
+	public int getTimeToRetryRequestCallMs() {
+		return timeToRetryRequestCallMs;
 	}
 }

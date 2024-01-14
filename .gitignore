@@ -4,3 +4,5 @@
 .gradle
 build
 build/*
+/src/main/java/test.ClassToTestMain.java
+/src/main/java/test_library/

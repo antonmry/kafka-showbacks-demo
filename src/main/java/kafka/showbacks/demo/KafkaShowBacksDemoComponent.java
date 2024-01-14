@@ -8,14 +8,15 @@ import javax.inject.Singleton;
 @Singleton
 @Component(modules = KafkaShowBacksDemoModule.class)
 public interface KafkaShowBacksDemoComponent {
-	@Named("confluentTeamUsageCost")
-	KafkaShowBacksDemo buildConfluentTeamUsageCost();
+
+	@Named("confluentCloudShowBacks")
+	KafkaShowBacksDemo buildConfluentCloudShowBacks();
 
 	/**
 	 * TODO just is an example of another kafka environment currently this return null
 	 *
 	 * @return
 	 */
-	@Named("anotherKafkaEnvironmentTeamUsageCost")
-	KafkaShowBacksDemo buildMSKTeamUsageCost();
+	@Named("otherKafkaEnvironmentCloudShowBacks")
+	KafkaShowBacksDemo buildOtherCloudShowBacks();
 }

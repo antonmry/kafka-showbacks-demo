@@ -1,5 +1,6 @@
 package kafka.showbacks.demo;
 
+import dagger.Module;
 import dagger.Provides;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.clouddata.billing.ConfluentCloudCostService;
@@ -12,11 +13,13 @@ import kafka.showbacks.demo.clustermetrics.ClusterMetricService;
 import kafka.showbacks.demo.clustermetrics.ConfluentCloudMetricClient;
 import kafka.showbacks.demo.clustermetrics.ConfluentCloudMetricService;
 import kafka.showbacks.demo.common.rest.RetryOnError;
+import kafka.showbacks.demo.configuration.KafkaShowBackDemoConfigurationModule;
 import kafka.showbacks.demo.configuration.KafkaShowBacksDemoConfiguration;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+@Module(includes = KafkaShowBackDemoConfigurationModule.class)
 public interface KafkaShowBacksDemoModule {
 
 	@Provides
@@ -30,7 +33,7 @@ public interface KafkaShowBacksDemoModule {
 	@Provides
 	@Singleton
 	@Named("confluentCloudMetricService")
-	static ClusterMetricService confluentMetricService(@Named("confluentCloudCustomMetricClient") final ClusterMetricClient confluentCloudCustomMetricClient, final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
+	static ClusterMetricService confluentCloudMetricService(@Named("confluentCloudCustomMetricClient") final ClusterMetricClient confluentCloudCustomMetricClient, final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
 		return new ConfluentCloudMetricService(confluentCloudCustomMetricClient, kafkaShowBacksDemoConfiguration.getCacheExpiredInHours());
 	}
 
@@ -75,11 +78,28 @@ public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton
-	@Named("confluentCloudCustomMetricClient") //todo add exemple to other kafka environment
-	static KafkaShowBacksDemo confluentKafkaShowBackDemo(@Named("confluentCloudMetricService") final ClusterMetricService confluentClusterMetricService,
-	                                                     final ConfluentCloudServiceAccountCache confluentCloudServiceAccountCache,
-	                                                     final ConfluentCloudCostService confluentCloudCostService,
-	                                                     final ServiceAccountTopic serviceAccountTopic) {
-		return new ConfluentKafkaShowBacksDemo(confluentClusterMetricService, confluentCloudServiceAccountCache, confluentCloudCostService, serviceAccountTopic);
+	@Named("confluentCloudShowBacks") //todo add exemple to other kafka environment
+	static KafkaShowBacksDemo confluentCloudShowBacks(@Named("confluentCloudMetricService") final ClusterMetricService confluentCloudMetricService,
+	                                                  final ConfluentCloudServiceAccountCache confluentCloudServiceAccountCache,
+	                                                  final ConfluentCloudCostService confluentCloudCostService,
+	                                                  @Named("newRelicGraphServiceAccountTopicCache") final ServiceAccountTopic newRelicGraphServiceAccountTopicCache) {
+		return new ConfluentKafkaShowBacksDemo(confluentCloudMetricService, confluentCloudServiceAccountCache, confluentCloudCostService, newRelicGraphServiceAccountTopicCache);
+
+	}
+
+	/**
+	 * Example other kafka environment
+	 */
+	@Provides
+	@Singleton
+	@Named("otherKafkaEnvironmentCloudShowBacks")
+	static KafkaShowBacksDemo otherKafkaEnvironmentCloudShowBacks() {
+		return null;
+	}
+
+	@Provides
+	static RetryOnError retryOnError(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
+		return new RetryOnError(kafkaShowBacksDemoConfiguration.getNumRequestRetries(),
+				kafkaShowBacksDemoConfiguration.getTimeToRetryRequestCallMs());
 	}
 }
