@@ -1,0 +1,4 @@
+confluent:
+  apiKey: ${CONFLUENT_API_KEY}
+  cloudServiceAccountUrl: ${CONFLUENT_SERVICE_ACCOUNT_URL}
+  cloudBillingUrl: ${CONFLUENT_BILLING_URL}

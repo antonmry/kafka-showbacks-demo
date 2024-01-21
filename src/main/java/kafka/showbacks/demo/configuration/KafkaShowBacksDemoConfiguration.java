@@ -6,10 +6,8 @@ import io.dropwizard.core.Configuration;
 //todo different configurations class
 //todo records
 //todo Configuratoions class is not needed /neither json records...
-public final class KafkaShowBacksDemoConfiguration extends Configuration {
-
-	@JsonProperty("confluentApiKey")
-	private String confluentApiKey;
+//todo log configuration
+public class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	@JsonProperty("confluentApiSecret")
 	private String confluentApiSecret;
@@ -20,23 +18,20 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 	@JsonProperty("telemetryUrl")
 	private String telemetryUrl;
 
-	@JsonProperty("cloudBillingUrl")
-	private String cloudBillingUrl;
-
-	@JsonProperty("cloudServiceAccountUrl")
-	private String cloudServiceAccountUrl;
-
 	@JsonProperty("cacheExpiredInHours")
 	private int cacheExpiredInHours;
 
-	@JsonProperty("newRelicAccountId")
-	private String newRelicAccountId;
+	@JsonProperty("confluent")
+	private ConfluentConfiguration confluentConfiguration;
 
-	@JsonProperty("newRelicGraphUrl")
-	private String newRelicGraphUrl;
+	//@JsonProperty("newRelicAccountId")
+	//private String newRelicAccountId;
 
-	@JsonProperty("newRelicApiKey")
-	private String newRelicApiKey;
+	//@JsonProperty("newRelicGraphUrl")
+	//private String newRelicGraphUrl;
+
+	//@JsonProperty("newRelicApiKey")
+	//private String newRelicApiKey;
 
 	@JsonProperty(value = "numRequestRetries", defaultValue = "3")
 	private int numRequestRetries;
@@ -44,9 +39,11 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 	@JsonProperty(value = "timeToRetryRequestCallMs", defaultValue = "2000")
 	private int timeToRetryRequestCallMs;
 
-	public String getConfluentApiKey() {
-		return confluentApiKey;
-	}
+	@JsonProperty(value = "initialDelaySeconds", defaultValue = "10")
+	private long initialDelaySeconds;
+
+	@JsonProperty(value = "periodInSeconds", defaultValue = "86400")
+	private long periodInSeconds;
 
 	public String getConfluentApiSecret() {
 		return confluentApiSecret;
@@ -64,15 +61,8 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 		return cacheExpiredInHours;
 	}
 
-	public String getCloudBillingUrl() {
-		return cloudBillingUrl;
-	}
 
-	public String getCloudServiceAccountUrl() {
-		return cloudServiceAccountUrl;
-	}
-
-	public String getNewRelicAccountId() {
+	/*public String getNewRelicAccountId() {
 		return newRelicAccountId;
 	}
 
@@ -82,7 +72,7 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	public String getNewRelicApiKey() {
 		return newRelicApiKey;
-	}
+	}*/
 
 	public int getNumRequestRetries() {
 		return numRequestRetries;
@@ -90,5 +80,17 @@ public final class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	public int getTimeToRetryRequestCallMs() {
 		return timeToRetryRequestCallMs;
+	}
+
+	public long getInitialDelaySeconds() {
+		return initialDelaySeconds;
+	}
+
+	public long getPeriodInSeconds() {
+		return periodInSeconds;
+	}
+
+	public ConfluentConfiguration getConfluentConfiguration() {
+		return confluentConfiguration;
 	}
 }

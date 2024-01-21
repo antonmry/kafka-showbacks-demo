@@ -1,17 +1,16 @@
 package kafka.showbacks.demo.configuration;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
+import io.dropwizard.core.Configuration;
 
 import javax.inject.Singleton;
 
 //todo check why
 @Module
-public record KafkaShowBackDemoConfigurationModule(KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
+public interface KafkaShowBackDemoConfigurationModule {
 
-	@Provides
+	@Binds
 	@Singleton
-	public KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration() {
-		return this.kafkaShowBacksDemoConfiguration;
-	}
+	Configuration KafkaShowBacksDemoConfiguration(KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration);
 }

@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public final class ConfluentCloudCostService {
 	}
 
 	//todo cluster??
-	public Set<ClusterCostData> getCostDataByTimeRange(final Date startDate, final Date endDate) throws KafkaShowBackDemoException {
+	public Set<ClusterCostData> getCostDataByTimeRange(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException {
 		//todo how to send parameters
 		log.info("Getting cost by time range and cluster");
 		final String urlWithRangeTime = Joiner.on("").join(billingCloudUrl, String.format(QUERY_PARAMETER_MAX_PAGE_SIZE, startDate, endDate));

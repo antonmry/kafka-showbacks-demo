@@ -42,6 +42,7 @@ public class ConfluentCloudServiceAccountCache {
 		this.serviceAccountInformationCache = Caffeine.newBuilder()
 				.expireAfterWrite(cacheExpiredInHours, TimeUnit.HOURS)
 				.build();
+		//todo check here aboiut null
 		this.serviceAccountCloudUrl = Joiner.on("").join(serviceAccountCloudUrl, QUERY_PARAMETER_MAX_PAGE_SIZE);
 	}
 

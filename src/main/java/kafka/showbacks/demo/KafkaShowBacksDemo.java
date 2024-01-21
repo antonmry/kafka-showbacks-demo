@@ -4,7 +4,7 @@ import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
 import kafka.showbacks.demo.common.model.TeamCostData;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
@@ -20,7 +20,7 @@ public interface KafkaShowBacksDemo {
 	 * Currently this information just can be obtained by complete days and it's not possible
 	 * filter by cluster.
 	 */
-	Set<ClusterCostData> getCostDataByDate(final Date startDate, final Date endDate) throws KafkaShowBackDemoException; //todo now here will see if we should change it
+	Set<ClusterCostData> getCostDataByDate(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException; //todo now here will see if we should change it
 
 	/**
 	 * Return the calculated cost by team taking during the time range sent
