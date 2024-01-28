@@ -1,4 +1,9 @@
 confluent:
   apiKey: ${CONFLUENT_API_KEY}
+  apiSecret: ${CONFLUENT_API_SECRET}
   cloudServiceAccountUrl: ${CONFLUENT_SERVICE_ACCOUNT_URL}
   cloudBillingUrl: ${CONFLUENT_BILLING_URL}
+
+initialDelaySeconds: 10
+periodInSeconds: 30 #to change just to test it #todo execute just one time in demo mode
+requestTimeOutInSeconds: 30

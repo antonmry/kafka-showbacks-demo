@@ -102,7 +102,7 @@ public class AbstractServiceClient {
 					, exception);
 		}
 	}
-
+	//todo check willackar
 	protected <T> T mapJsonStringToObjectResponse(final Class<T> classType, final String response) throws KafkaShowBackDemoException {
 		try {
 			return objectMapper.readValue(

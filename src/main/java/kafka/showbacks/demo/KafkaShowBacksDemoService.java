@@ -1,6 +1,7 @@
 package kafka.showbacks.demo;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
+import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
 import kafka.showbacks.demo.common.model.TeamCostData;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -39,22 +41,15 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	}
 
 	@Override
-	protected void runOneIteration() throws Exception {
+	protected void runOneIteration() {
 		log.info("Starting KafkaShowBacksDemoService.");
+		//todo check if we should remove one hour
+		final Set<ClusterCostData> costDataSet = getBillingDataForDate();
 
-		//local date vs da
-		final LocalDate startDate = LocalDate.now().minusDays(this.daysToSubtract);
-		final LocalDate endDate = LocalDate.now().minusDays(1);
+		if (!costDataSet.isEmpty()) {
+			log.info("Calculating costs data by team. Number of records {}", costDataSet.size());
 
-		log.info("Searching data billing from {} until {}.", startDate, endDate);
-
-		//todo exception and type
-		final Set<ClusterCostData> clusterCostDataSet = this.kafkaShowBacksDemo.getCostDataByDate(startDate, endDate);
-
-		if (!clusterCostDataSet.isEmpty()) {
-			log.info("Calculating costs data by team. Number of records {}", clusterCostDataSet.size());
-
-			final Set<TeamCostData> teamCostDataSet = this.kafkaShowBacksDemo.getCostDividedByTeams(clusterCostDataSet);
+			final Set<TeamCostData> teamCostDataSet = getCostDividedByTeams(costDataSet);
 			//todo store data
 
 		} else {
@@ -67,6 +62,33 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	@Override
 	protected Scheduler scheduler() {
 		return Scheduler.newFixedRateSchedule(initialDelayInSeconds, periodInSeconds, TimeUnit.SECONDS);
+	}
+
+
+	private Set<ClusterCostData> getBillingDataForDate() {
+		//local date vs da
+		final LocalDate startDate = LocalDate.now().minusDays(this.daysToSubtract);
+		final LocalDate endDate = LocalDate.now().minusDays(1);
+
+		log.info("Searching data billing from {} until {}.", startDate, endDate);
+
+		try {
+			//todo exception and type
+			return this.kafkaShowBacksDemo.getCostDataByDate(startDate, endDate);
+
+		} catch (KafkaShowBackDemoException kafkaShowBackDemoException) {
+			log.error("Error trying to get the billing by date.", kafkaShowBackDemoException);
+		}
+		return Collections.EMPTY_SET; //todo stop proccess
+	}
+
+	private Set<TeamCostData> getCostDividedByTeams(final Set<ClusterCostData> clusterCostDataSet) {
+		try {
+			return this.kafkaShowBacksDemo.getCostDividedByTeams(clusterCostDataSet);
+		} catch (KafkaShowBackDemoException kafkaShowBackDemoException) {
+			log.error("Error trying to calculate cost divided by teams.", kafkaShowBackDemoException);
+		}
+		return Collections.EMPTY_SET;
 	}
 
 }

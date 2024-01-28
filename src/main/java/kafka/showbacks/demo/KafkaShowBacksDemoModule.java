@@ -22,10 +22,10 @@ public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton
-	@Named("confluentCloudCustomMetricClient")
-	static ClusterMetricClient confluentCloudCustomMetricClient(final ConfluentConfiguration confluentConfiguration, final RetryOnError retryOnError) {
-		return new ConfluentCloudMetricClient(confluentConfiguration.getConfluentApiKey(), confluentConfiguration.getConfluentApiSecret(),
-				confluentConfiguration.getRequestTimeOutInSeconds(), confluentConfiguration.getTelemetryUrl(), retryOnError);
+	@Named("confluentCloudCustomMetricClient") //todo configurations
+	static ClusterMetricClient confluentCloudCustomMetricClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoCongifuration, final RetryOnError retryOnError) {
+		return new ConfluentCloudMetricClient(kafkaShowBacksDemoCongifuration.getConfluentConfiguration().getConfluentApiKey(), kafkaShowBacksDemoCongifuration.getConfluentConfiguration().getConfluentApiSecret(),
+				kafkaShowBacksDemoCongifuration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoCongifuration.getTelemetryUrl(), retryOnError);
 	}
 
 	@Provides
@@ -43,10 +43,10 @@ public interface KafkaShowBacksDemoModule {
 	}
 
 	@Provides
-	@Singleton
-	static ConfluentCloudServiceClient confluentServiceAccountClient(final ConfluentConfiguration confluentConfiguration, final RetryOnError retryOnError) {
+	@Singleton //todo singlenton ?? //todo configurations
+	static ConfluentCloudServiceClient confluentServiceAccountClient(final ConfluentConfiguration confluentConfiguration, final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
 		return new ConfluentCloudServiceClient(confluentConfiguration.getConfluentApiKey(), confluentConfiguration.getConfluentApiSecret(),
-				confluentConfiguration.getRequestTimeOutInSeconds(), retryOnError);
+				kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), retryOnError);
 	}
 
 	@Provides

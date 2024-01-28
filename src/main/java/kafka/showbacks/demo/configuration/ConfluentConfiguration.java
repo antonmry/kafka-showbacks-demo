@@ -12,6 +12,9 @@ public class ConfluentConfiguration extends KafkaShowBacksDemoConfiguration {
 	@JsonProperty("cloudServiceAccountUrl")
 	private String cloudServiceAccountUrl;
 
+	@JsonProperty("apiSecret")
+	private String confluentApiSecret;
+
 	public String getConfluentApiKey() {
 		return confluentApiKey;
 	}
@@ -24,4 +27,7 @@ public class ConfluentConfiguration extends KafkaShowBacksDemoConfiguration {
 		return cloudServiceAccountUrl;
 	}
 
+	public String getConfluentApiSecret() {
+		return confluentApiSecret;
+	}
 }
