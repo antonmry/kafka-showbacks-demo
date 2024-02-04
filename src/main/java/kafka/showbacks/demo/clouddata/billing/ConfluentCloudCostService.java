@@ -61,7 +61,7 @@ public final class ConfluentCloudCostService {
 			return confluentCloudServiceCostDataItemSet.stream()
 					.filter(item -> VALID_COST_TYPE.containsKey(item.costType()))
 					.map(item -> new ClusterCostData(CostType.valueOf(item.costType()), item.amount(),
-							item.clusterTotalUsage(), item.clusterID(),
+							item.clusterTotalUsage(), item.resource().clusterId(),
 							item.startPeriod().atStartOfDay().toInstant(ZoneOffset.UTC),
 							item.endPeriod().atStartOfDay().toInstant(ZoneOffset.UTC)))
 					.collect(Collectors.toSet());

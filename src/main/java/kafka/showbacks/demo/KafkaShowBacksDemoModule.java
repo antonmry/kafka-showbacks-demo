@@ -25,7 +25,7 @@ public interface KafkaShowBacksDemoModule {
 	@Named("confluentCloudCustomMetricClient") //todo configurations
 	static ClusterMetricClient confluentCloudCustomMetricClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoCongifuration, final RetryOnError retryOnError) {
 		return new ConfluentCloudMetricClient(kafkaShowBacksDemoCongifuration.getConfluentConfiguration().getConfluentApiKey(), kafkaShowBacksDemoCongifuration.getConfluentConfiguration().getConfluentApiSecret(),
-				kafkaShowBacksDemoCongifuration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoCongifuration.getTelemetryUrl(), retryOnError);
+				kafkaShowBacksDemoCongifuration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoCongifuration.getConfluentConfiguration().getTelemetryUrl(), retryOnError);
 	}
 
 	@Provides
@@ -91,7 +91,7 @@ public interface KafkaShowBacksDemoModule {
 	static KafkaShowBacksDemoService KafkaShowBacksDemoService(@Named("confluentCloudShowBacks") final KafkaShowBacksDemo kafkaShowBacksDemo,
 	                                                           final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration,
 	                                                           final boolean isDemoMode) {
-		return new KafkaShowBacksDemoService(kafkaShowBacksDemo, kafkaShowBacksDemoConfiguration.getInitialDelaySeconds(), kafkaShowBacksDemoConfiguration.getPeriodInSeconds(), isDemoMode);
+		return new KafkaShowBacksDemoService(kafkaShowBacksDemo, kafkaShowBacksDemoConfiguration.getConfluentConfiguration().getClustersIdList(), kafkaShowBacksDemoConfiguration.getInitialDelaySeconds(), kafkaShowBacksDemoConfiguration.getPeriodInSeconds(), isDemoMode);
 	}
 
 	/**

@@ -289,14 +289,18 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 		}
 	}
 
-	private Map<CostType, Map<String, List<ClusterCostData>>> getMapGroupByCostAndCluster(final Set<ClusterCostData> clusterCostDataSet) {
+	private Map<CostType, Map<String, List<ClusterCostData>>> getMapGroupByCostAndCluster(final Set<ClusterCostData> clusterCostDataSet) throws KafkaShowBackDemoException {
 		final Map<CostType, Map<String, List<ClusterCostData>>> mapGroupByCostAndCluster = new HashMap<>();
 		for (CostType costType : CostType.values()) {
 			if (clusterCostDataSet.stream().anyMatch(costData -> costData.costType().equals(costType))) {
-				mapGroupByCostAndCluster.put(costType,
-						clusterCostDataSet.stream()
-								.filter(clusterCostData -> clusterCostData.costType().equals(costType))
-								.collect(Collectors.groupingBy(ClusterCostData::clusterID)));
+				try {
+					mapGroupByCostAndCluster.put(costType,
+							clusterCostDataSet.stream()
+									.filter(clusterCostData -> clusterCostData.costType().equals(costType))
+									.collect(Collectors.groupingBy(ClusterCostData::clusterID)));
+				} catch (RuntimeException runtimeException) { //TODO
+					throw new KafkaShowBackDemoException("Error grouping by cluster & cost type.", runtimeException);
+				}
 			}
 		}
 		return mapGroupByCostAndCluster;
