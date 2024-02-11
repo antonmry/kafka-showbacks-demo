@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
 import kafka.showbacks.demo.common.model.TeamCostData;
+import kafka.showbacks.demo.outputdata.OutputDataService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,14 @@ import java.util.stream.Collectors;
 //todo protecte
 //todo singlenton
 //TODO CONFLUENT
+//todo check general design
 class KafkaShowBacksDemoService extends AbstractScheduledService {
 
 	private static final Logger log = LoggerFactory.getLogger(KafkaShowBacksDemoService.class);
 
 	private final KafkaShowBacksDemo kafkaShowBacksDemo;
+
+	private final OutputDataService nr1OutputDataService;
 
 	private final long initialDelayInSeconds;
 
@@ -35,11 +39,13 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	//todo protect
 	@Inject
 	KafkaShowBacksDemoService(final KafkaShowBacksDemo kafkaShowBacksDemo,
+	                          final OutputDataService nr1OutputDataService,
 	                          final Set<String> clustersIdSet,
 	                          final long initialDelaySeconds,
 	                          final long periodInSeconds,
 	                          final boolean demoMode) {
 		this.kafkaShowBacksDemo = kafkaShowBacksDemo;
+		this.nr1OutputDataService = nr1OutputDataService;
 		this.clustersId = clustersIdSet;
 		this.initialDelayInSeconds = initialDelaySeconds;
 		this.periodInSeconds = periodInSeconds;
@@ -53,16 +59,17 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 		final Set<ClusterCostData> costDataSet = getBillingDataForDate();
 
 		if (!costDataSet.isEmpty()) {
-			for (String clusterId : clustersId) {
+			for (String clusterId : clustersId) { //todo ...
 				//todo if is empty recover all
 				final Set<ClusterCostData> costDataByClusterId = costDataSet.stream()
 						.filter(clusterCostData -> StringUtils.equalsIgnoreCase(clusterCostData.clusterID(), clusterId))
 						.collect(Collectors.toSet());
 				if (!costDataByClusterId.isEmpty()) {
-					log.info("Calculating  costs data by team. ClusterId:{}", clusterId);
+
 					final Set<TeamCostData> teamCostDataSet = getCostDividedByTeams(costDataByClusterId);
-					teamCostDataSet.stream().forEach(x -> System.out.println(x));
-					//todo store data
+
+					storeOutputData(teamCostDataSet);
+
 				} else {
 					log.warn("No cost founds for clusterId:{}", clusterId);
 				}
@@ -100,6 +107,7 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	}
 
 	private Set<TeamCostData> getCostDividedByTeams(final Set<ClusterCostData> clusterCostDataSet) {
+		log.info("Calculating  costs data by team. ClusterCostData size: {}", clusterCostDataSet.size());
 		try {
 			return this.kafkaShowBacksDemo.getCostDividedByTeams(clusterCostDataSet);
 		} catch (KafkaShowBackDemoException kafkaShowBackDemoException) {
@@ -108,4 +116,12 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 		return Collections.EMPTY_SET;
 	}
 
+	private void storeOutputData(final Set<TeamCostData> teamCostDataSet) {
+		log.info("Storing output data. Number of records: {}", teamCostDataSet.size());
+		try {
+			this.nr1OutputDataService.sendOutputData(teamCostDataSet, "Confluent");
+		} catch (KafkaShowBackDemoException e) {
+			log.error("Error storing output data.", e);
+		}
+	}
 }

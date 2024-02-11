@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Joiner;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -36,11 +35,16 @@ public class AbstractServiceClient {
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
+	//todo enum
 	protected static final String BASIC_CONTENT_TYPE_KEY_HEADER = "Content-Type";
 
 	protected static final String BASIC_CONTENT_TYPE_VALUE_HEADER = "application/json";
 
 	protected static final String BASIC_AUTHORIZATION_HEADER = "Authorization";
+
+	protected static final String API_KEY_HEADER = "Api-Key";
+
+	protected static final String CONTENT_ENCODING_GZIP_HEADER = "gzip";
 
 	private final RetryOnError retryOnError;
 
@@ -78,9 +82,8 @@ public class AbstractServiceClient {
 		final HttpResponse<String> metricRequestHttpResponse = send(httpRequest);
 
 		if (metricRequestHttpResponse.statusCode() != HttpURLConnection.HTTP_OK) {
-			final ErrorResponse errorResponse = mapJsonStringToObjectResponse(ErrorResponse.class, metricRequestHttpResponse.body());
-			throw new KafkaShowBackDemoException(errorResponse.hasData() ? errorResponse.toString() :
-					Joiner.on("").join("Unrecognized error sending request, status code", metricRequestHttpResponse.statusCode()));
+			throw new KafkaShowBackDemoException(StringUtils.isNoneBlank(metricRequestHttpResponse.body()) ? metricRequestHttpResponse.body() :
+					Joiner.on(" ").join("Unrecognized error sending request, status code", metricRequestHttpResponse.statusCode()));
 		}
 		return Optional.ofNullable(metricRequestHttpResponse.body());
 	}
@@ -137,15 +140,4 @@ public class AbstractServiceClient {
 		}
 	}
 
-	@JsonSerialize
-	private record ErrorResponse(Set<Error> errors) implements ResponseObject {
-
-		@Override
-		public boolean hasData() {
-			return errors != null && !errors.isEmpty();
-		}
-	}
-
-	private record Error(int status, String detail) {
-	}
 }

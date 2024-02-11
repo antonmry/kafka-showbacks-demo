@@ -9,3 +9,9 @@ confluent:
 initialDelaySeconds: 10
 periodInSeconds: 30 #to change just to test it #todo execute just one time in demo mode
 requestTimeOutInSeconds: 30
+
+newrelic:
+  licenseApiKey: ${NR_LICENSE_API_KEY}
+  eventAPIUrl: ${NR_CUSTOM_EVENT_API_URL}
+  eventType: KafkaShowBackDemo
+  accountId: ${NR_ACCOUNT_ID}

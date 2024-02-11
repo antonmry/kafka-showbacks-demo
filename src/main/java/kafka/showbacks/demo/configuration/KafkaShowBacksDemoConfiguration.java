@@ -29,6 +29,9 @@ public class KafkaShowBacksDemoConfiguration extends Configuration {
 	@JsonProperty(value = "periodInSeconds", defaultValue = "86400")
 	private long periodInSeconds;
 
+	@JsonProperty("newrelic")
+	private NR1Configuration nr1Configuration;
+
 	public int getRequestTimeOutInSeconds() {
 		return requestTimeOutInSeconds;
 	}
@@ -55,5 +58,9 @@ public class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	public ConfluentConfiguration getConfluentConfiguration() {
 		return confluentConfiguration;
+	}
+
+	public NR1Configuration getNr1Configuration() {
+		return nr1Configuration;
 	}
 }
