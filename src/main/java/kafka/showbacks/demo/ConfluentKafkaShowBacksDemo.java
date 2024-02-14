@@ -171,7 +171,8 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 				sumCostByTeams = add(sumCostByTeams, teamUsageCost);
 				sumUsageByTeams = add(sumUsageByTeams, teamUsageUsed);
 
-				teamCostDataSet.add(new TeamCostData(serviceAccountInformation.organization(),
+				teamCostDataSet.add(new TeamCostData(clusterCostData.clusterID(),
+						serviceAccountInformation.organization(),
 						serviceAccountInformation.application(),
 						teamUsageCost,
 						teamUsageUsed,
@@ -209,7 +210,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 				cumulusTotalCostUsed = add(cumulusTotalCostUsed, teamCost);
 				cumulusTotalUsageUsed = add(cumulusTotalUsageUsed, teamUsageUsed);
 
-				teamCostDataSet.add(new TeamCostData(serviceAccountClusterInformation.organization(), serviceAccountClusterInformation.application(), teamCost, teamUsageUsed,
+				teamCostDataSet.add(new TeamCostData(clusterCostData.clusterID(), serviceAccountClusterInformation.organization(), serviceAccountClusterInformation.application(), teamCost, teamUsageUsed,
 						clusterCostData.startPeriod(), clusterCostData.endPeriod(), clusterCostData.costType()));
 
 			}
@@ -329,7 +330,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 			log.warn("The calculation of total usage used: {} is bigger than total amount usage received {}", sumUsageTeamsAndRest, clusterCostData.clusterTotalUsage());
 		}
 
-		return new TeamCostData(DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, totalCostRest, totalUsageRest,
+		return new TeamCostData(clusterCostData.clusterID(), DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, totalCostRest, totalUsageRest,
 				clusterCostData.startPeriod(), clusterCostData.endPeriod(), clusterCostData.costType());
 	}
 
@@ -372,7 +373,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 		log.warn("No action/data found for {} cost type and cluster {}. The total cost will include in the default organization ({}).",
 				clusterCostData.costType(), clusterCostData.clusterID(), DEFAULT_ORGANIZATION);
 
-		return new TeamCostData(DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, clusterCostData.clusterTotalCost(), clusterCostData.clusterTotalUsage(), clusterCostData.startPeriod(),
+		return new TeamCostData(clusterCostData.clusterID(), DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, clusterCostData.clusterTotalCost(), clusterCostData.clusterTotalUsage(), clusterCostData.startPeriod(),
 				clusterCostData.endPeriod(), clusterCostData.costType());
 	}
 }

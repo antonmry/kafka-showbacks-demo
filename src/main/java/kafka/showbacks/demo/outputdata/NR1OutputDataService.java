@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.Iterables;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.TeamCostData;
 import kafka.showbacks.demo.common.rest.AbstractServiceClient;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.http.HttpRequest;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +27,9 @@ import java.util.stream.Collectors;
 public final class NR1OutputDataService extends AbstractServiceClient implements OutputDataService {
 
 	private static final Logger log = LoggerFactory.getLogger(NR1OutputDataService.class);
+
+	//todo configuration panel
+	private static final int LIMIT_NUMBER_OF_RECORDS_TO_SEND = 1_500;
 
 	//todo check
 	private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -46,34 +51,43 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 	}
 
 	//todo kafkaProvider
+	//todo store duplicated
 	@Override
 	public void sendOutputData(final Set<TeamCostData> teamCostDataSet, final String kafkaProvider) throws KafkaShowBackDemoException {
-		final Optional<String> jsonPayload = getTeamCostDataSetAsPayload(teamCostDataSet, kafkaProvider);
-
 		if (StringUtils.isEmpty(this.eventAPIUrl)) {
 			throw new KafkaShowBackDemoException("The eventAPIUrl parameter can not be null");
 		}
+		//final int numberOfBatches = !teamCostDataSet.isEmpty() ? IntMath.divide(teamCostDataSet.size(), LIMIT_NUMBER_OF_RECORDS_TO_SEND, RoundingMode.CEILING) : 0;
+		final Iterable<List<TeamCostData>> subSetsTeamCostData = Iterables.partition(teamCostDataSet, LIMIT_NUMBER_OF_RECORDS_TO_SEND);
 
-		if (jsonPayload.isPresent()) {
-			log.info("Sending data to NR1 event {}", this.eventType);
+		subSetsTeamCostData.forEach(listTeamCostData -> {
+			final Optional<String> jsonPayload = getTeamCostDataSetAsPayload(listTeamCostData, kafkaProvider);
+			if (jsonPayload.isPresent()) {
+				log.info("Sending data to NR1 event {}", this.eventType);
+				try {
 
-			final HttpRequest httpRequest = createRequestPOSTBuilder(jsonPayload.get(),
-					this.eventAPIUrl);
+					final HttpRequest httpRequest = createRequestPOSTBuilder(jsonPayload.get(),
+							this.eventAPIUrl);
 
-			final String httpResponse = getHttpResponse(httpRequest).orElseThrow(
-					() -> new KafkaShowBackDemoException("The process to send data to N1 has failed."));
+					final String httpResponse = getHttpResponse(httpRequest).orElseThrow(
+							() -> new KafkaShowBackDemoException("The process to send data to N1 has failed."));
 
-			log.info("End sending data to NR1 event {}", this.eventType);
+				} catch (KafkaShowBackDemoException kafkaShowBackDemoException) {
+					log.error("Error sending data to to NR1.", kafkaShowBackDemoException);
+				}
 
-		}
+			}
+		});
+
+		log.info("End sending data to NR1 event {}", this.eventType);
 	}
 
-	private Optional<String> getTeamCostDataSetAsPayload(final Set<TeamCostData> teamCostDataSet, final String kafkaProvider) {
+	private Optional<String> getTeamCostDataSetAsPayload(final List<TeamCostData> teamCostDataSet, final String kafkaProvider) {
 		final long timestamp = Instant.now().toEpochMilli();
 		final Set<KafkaShowBacks> kafkaShowBacksSet = teamCostDataSet.stream().map(tcd ->
 				new KafkaShowBacks(eventType, tcd.costType(), kafkaProvider,
 						tcd.organization(), tcd.application(), tcd.teamCost(), tcd.teamUsage(), tcd.startPeriod(),
-						tcd.endPeriod(), timestamp)).collect(Collectors.toSet());
+						tcd.endPeriod(), timestamp, tcd.clusterId())).collect(Collectors.toSet());
 
 		return mapKafkaShowBackToJson(kafkaShowBacksSet);
 	}

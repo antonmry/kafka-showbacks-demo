@@ -10,6 +10,6 @@ import java.time.Instant;
 record KafkaShowBacks(String eventType, CostType costType, String kafkaProvider, String organization,
                       String application,
                       BigDecimal teamCost, BigDecimal teamUsage,
-                      Instant startPeriod, Instant endPeriod, long timestamp) {
+                      Instant startPeriod, Instant endPeriod, long timestamp, String clusterId) {
 }
 

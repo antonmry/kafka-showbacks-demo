@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 //todo singlenton
 //TODO CONFLUENT
 //todo check general design
+//TODO The query to fill the collection from cloud API return more than one page
 class KafkaShowBacksDemoService extends AbstractScheduledService {
 
 	private static final Logger log = LoggerFactory.getLogger(KafkaShowBacksDemoService.class);

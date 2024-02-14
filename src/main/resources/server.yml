@@ -7,7 +7,7 @@ confluent:
   clustersIdList: ${CONFLUENT_CLUSTER_LIST}
 
 initialDelaySeconds: 10
-periodInSeconds: 30 #to change just to test it #todo execute just one time in demo mode
+periodInSeconds: 86400
 requestTimeOutInSeconds: 30
 
 newrelic:
