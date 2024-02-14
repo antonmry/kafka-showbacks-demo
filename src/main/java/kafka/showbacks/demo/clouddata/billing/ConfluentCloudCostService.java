@@ -1,6 +1,8 @@
 package kafka.showbacks.demo.clouddata.billing;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
+import kafka.showbacks.demo.CostType;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
@@ -8,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.Date;
-import java.util.HashSet;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,10 +23,15 @@ import java.util.stream.Collectors;
 //todo warnings
 //todo cache... take into accounts dates
 public final class ConfluentCloudCostService {
-
+	//todo check
+	private static final TypeReference<Set<ConfluentCloudServiceCostDataItem>> TYPE_REFERENCE = new TypeReference<>() {
+	};
 	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudCostService.class);
 
-	private static final String QUERY_PARAMETER_MAX_PAGE_SIZE = "?start_date=&t&end_date=%t&page_size=10000";
+	private static final String QUERY_PARAMETER_MAX_PAGE_SIZE = "?start_date=%s&end_date=%s&page_size=10000";
+
+	private static final Map<String, String> VALID_COST_TYPE = Arrays.stream(CostType.values())
+			.collect(Collectors.toMap(CostType::toString, CostType::getName));
 
 	private final ConfluentCloudServiceClient confluentCloudCostServiceClient;
 
@@ -36,22 +45,29 @@ public final class ConfluentCloudCostService {
 	}
 
 	//todo cluster??
-	public Set<ClusterCostData> getCostDataByTimeRange(final Date startDate, final Date endDate) throws KafkaShowBackDemoException {
+	public Set<ClusterCostData> getCostDataByTimeRange(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException {
 		//todo how to send parameters
 		log.info("Getting cost by time range and cluster");
-		final String urlWithRangeTime = Joiner.on("").join(billingCloudUrl, String.format(QUERY_PARAMETER_MAX_PAGE_SIZE, startDate, endDate));
+		final String urlWithRangeTime = Joiner.on("").join(billingCloudUrl, String.format(QUERY_PARAMETER_MAX_PAGE_SIZE, startDate.toString(), endDate.toString()));
 
-		final Set<ConfluentCloudServiceCostDataItem> confluentCloudServiceCostDataItemSet = new HashSet<>();
-		this.confluentCloudCostServiceClient.fillCollectionFromConfluentCloudServiceClient(confluentCloudServiceCostDataItemSet, urlWithRangeTime);
+		final Set<ConfluentCloudServiceCostDataItem> confluentCloudServiceCostDataItemSet = this.confluentCloudCostServiceClient.getCollectionFromConfluentCloudServiceClient(urlWithRangeTime, TYPE_REFERENCE);
 
 		return mapDataItemCostToClusterCostData(confluentCloudServiceCostDataItemSet);
 	}
 
-	private Set<ClusterCostData> mapDataItemCostToClusterCostData(final Set<ConfluentCloudServiceCostDataItem> confluentCloudServiceCostDataItemSet) {
+	private Set<ClusterCostData> mapDataItemCostToClusterCostData(final Set<ConfluentCloudServiceCostDataItem> confluentCloudServiceCostDataItemSet) throws KafkaShowBackDemoException {
+		try {
+			log.info("Mapping cluster cost data results {}", confluentCloudServiceCostDataItemSet.size());
+			return confluentCloudServiceCostDataItemSet.stream()
+					.filter(item -> VALID_COST_TYPE.containsKey(item.costType()))
+					.map(item -> new ClusterCostData(CostType.valueOf(item.costType()), item.amount(),
+							item.clusterTotalUsage(), item.resource().clusterId(),
+							item.startPeriod().atStartOfDay().toInstant(ZoneOffset.UTC),
+							item.endPeriod().atStartOfDay().toInstant(ZoneOffset.UTC)))
+					.collect(Collectors.toSet());
 
-		log.info("Mapping cluster cost data results {}", confluentCloudServiceCostDataItemSet.size());
-		return confluentCloudServiceCostDataItemSet.stream()
-				.map(item -> new ClusterCostData(item.costType(), item.amount(),
-						item.clusterTotalUsage(), item.clusterID(), item.startPeriod(), item.endPeriod())).collect(Collectors.toSet());
+		} catch (RuntimeException runTimeException) { //todo review this exception
+			throw new KafkaShowBackDemoException("Error mapping cluster cost data", runTimeException);
+		}
 	}
 }

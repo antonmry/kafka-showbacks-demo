@@ -5,29 +5,30 @@ import dagger.Provides;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.clouddata.billing.ConfluentCloudCostService;
 import kafka.showbacks.demo.clouddata.serviceaccount.ConfluentCloudServiceAccountCache;
-import kafka.showbacks.demo.clouddata.serviceaccount.topic.NewRelicGraphClient;
-import kafka.showbacks.demo.clouddata.serviceaccount.topic.NewRelicGraphServiceAccountTopicCache;
-import kafka.showbacks.demo.clouddata.serviceaccount.topic.ServiceAccountTopic;
 import kafka.showbacks.demo.clustermetrics.ClusterMetricClient;
 import kafka.showbacks.demo.clustermetrics.ClusterMetricService;
 import kafka.showbacks.demo.clustermetrics.ConfluentCloudMetricClient;
 import kafka.showbacks.demo.clustermetrics.ConfluentCloudMetricService;
 import kafka.showbacks.demo.common.rest.RetryOnError;
+import kafka.showbacks.demo.configuration.ConfluentConfiguration;
 import kafka.showbacks.demo.configuration.KafkaShowBackDemoConfigurationModule;
 import kafka.showbacks.demo.configuration.KafkaShowBacksDemoConfiguration;
+import kafka.showbacks.demo.outputdata.NR1OutputDataService;
+import kafka.showbacks.demo.outputdata.OutputDataService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+//todo review configurations assigment
 @Module(includes = KafkaShowBackDemoConfigurationModule.class)
 public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton
-	@Named("confluentCloudCustomMetricClient")
-	static ClusterMetricClient confluentCloudCustomMetricClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
-		return new ConfluentCloudMetricClient(kafkaShowBacksDemoConfiguration.getConfluentApiKey(), kafkaShowBacksDemoConfiguration.getConfluentApiSecret(),
-				kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoConfiguration.getTelemetryUrl(), retryOnError);
+	@Named("confluentCloudCustomMetricClient") //todo configurations
+	static ClusterMetricClient confluentCloudCustomMetricClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoCongifuration, final RetryOnError retryOnError) {
+		return new ConfluentCloudMetricClient(kafkaShowBacksDemoCongifuration.getConfluentConfiguration().confluentApiKey(), kafkaShowBacksDemoCongifuration.getConfluentConfiguration().confluentApiSecret(),
+				kafkaShowBacksDemoCongifuration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoCongifuration.getConfluentConfiguration().telemetryUrl(), retryOnError);
 	}
 
 	@Provides
@@ -41,39 +42,21 @@ public interface KafkaShowBacksDemoModule {
 	@Singleton
 	static ConfluentCloudServiceAccountCache confluentServiceAccountCache(final ConfluentCloudServiceClient confluentServiceAccountClient,
 	                                                                      final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
-		return new ConfluentCloudServiceAccountCache(confluentServiceAccountClient, kafkaShowBacksDemoConfiguration.getCacheExpiredInHours(), kafkaShowBacksDemoConfiguration.getCloudServiceAccountUrl());
+		return new ConfluentCloudServiceAccountCache(confluentServiceAccountClient, kafkaShowBacksDemoConfiguration.getCacheExpiredInHours(), kafkaShowBacksDemoConfiguration.getConfluentConfiguration().cloudServiceAccountUrl());
 	}
 
 	@Provides
-	@Singleton
-	static ConfluentCloudServiceClient confluentServiceAccountClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
-		return new ConfluentCloudServiceClient(kafkaShowBacksDemoConfiguration.getConfluentApiKey(), kafkaShowBacksDemoConfiguration.getConfluentApiSecret(),
+	@Singleton //todo singlenton ?? //todo configurations
+	static ConfluentCloudServiceClient confluentServiceAccountClient(final ConfluentConfiguration confluentConfiguration, final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
+		return new ConfluentCloudServiceClient(confluentConfiguration.confluentApiKey(), confluentConfiguration.confluentApiSecret(),
 				kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), retryOnError);
 	}
 
 	@Provides
 	@Singleton
 	static ConfluentCloudCostService confluentCloudCostService(final ConfluentCloudServiceClient confluentCloudServiceClient,
-	                                                           final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
-		return new ConfluentCloudCostService(confluentCloudServiceClient, kafkaShowBacksDemoConfiguration.getCloudBillingUrl());
-	}
-
-	@Provides
-	@Singleton
-	static NewRelicGraphClient newRelicGraphClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration,
-	                                               final RetryOnError retryOnError) {
-		return new NewRelicGraphClient(retryOnError, kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(),
-				kafkaShowBacksDemoConfiguration.getNewRelicGraphUrl(), kafkaShowBacksDemoConfiguration.getNewRelicApiKey());
-	}
-
-	@Provides
-	@Singleton
-	@Named("newRelicGraphServiceAccountTopicCache")
-	static ServiceAccountTopic newRelicGraphServiceAccountTopicCache(final NewRelicGraphClient newRelicGraphClient,
-	                                                                 final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
-		return new NewRelicGraphServiceAccountTopicCache(newRelicGraphClient,
-				kafkaShowBacksDemoConfiguration.getCacheExpiredInHours(),
-				kafkaShowBacksDemoConfiguration.getNewRelicAccountId());
+	                                                           final ConfluentConfiguration confluentConfiguration) {
+		return new ConfluentCloudCostService(confluentCloudServiceClient, confluentConfiguration.cloudBillingUrl());
 	}
 
 	@Provides
@@ -81,10 +64,20 @@ public interface KafkaShowBacksDemoModule {
 	@Named("confluentCloudShowBacks") //todo add exemple to other kafka environment
 	static KafkaShowBacksDemo confluentCloudShowBacks(@Named("confluentCloudMetricService") final ClusterMetricService confluentCloudMetricService,
 	                                                  final ConfluentCloudServiceAccountCache confluentCloudServiceAccountCache,
-	                                                  final ConfluentCloudCostService confluentCloudCostService,
-	                                                  @Named("newRelicGraphServiceAccountTopicCache") final ServiceAccountTopic newRelicGraphServiceAccountTopicCache) {
-		return new ConfluentKafkaShowBacksDemo(confluentCloudMetricService, confluentCloudServiceAccountCache, confluentCloudCostService, newRelicGraphServiceAccountTopicCache);
+	                                                  final ConfluentCloudCostService confluentCloudCostService) {
+		return new ConfluentKafkaShowBacksDemo(confluentCloudMetricService, confluentCloudServiceAccountCache, confluentCloudCostService);
 
+	}
+
+
+	@Provides
+	@Singleton
+	@Named("KafkaShowBacksDemoService") //todo to remove msk
+	static KafkaShowBacksDemoService KafkaShowBacksDemoService(@Named("confluentCloudShowBacks") final KafkaShowBacksDemo kafkaShowBacksDemo,
+	                                                           @Named("NR1OutputDataService") final OutputDataService outputDataService,
+	                                                           final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration,
+	                                                           final boolean isDemoMode) {
+		return new KafkaShowBacksDemoService(kafkaShowBacksDemo, outputDataService, kafkaShowBacksDemoConfiguration.getConfluentConfiguration().clustersIdList(), kafkaShowBacksDemoConfiguration.getInitialDelaySeconds(), kafkaShowBacksDemoConfiguration.getPeriodInSeconds(), isDemoMode);
 	}
 
 	/**
@@ -102,4 +95,25 @@ public interface KafkaShowBacksDemoModule {
 		return new RetryOnError(kafkaShowBacksDemoConfiguration.getNumRequestRetries(),
 				kafkaShowBacksDemoConfiguration.getTimeToRetryRequestCallMs());
 	}
+
+	@Provides
+	@Singleton
+	static ConfluentConfiguration confluentConfiguration(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
+		return kafkaShowBacksDemoConfiguration.getConfluentConfiguration();
+	}
+
+	@Provides
+	@Singleton
+	@Named("NR1OutputDataService")
+	static OutputDataService getNR1OutputDataService(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
+		return new NR1OutputDataService(kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), retryOnError, kafkaShowBacksDemoConfiguration.getNr1Configuration());
+	}
+
+	//TODO IN ANOTHER MODULE WITH HEALTH CHECK
+	//todo ??
+	/*@Provides
+	@Singleton
+	static Set<Service> autoServices(final KafkaShowBacksDemoService kafkaShowBacksDemoService) {
+		return ImmutableSet.of(kafkaShowBacksDemoService);
+	}*/
 }

@@ -1,5 +1,6 @@
 package kafka.showbacks.demo.clouddata;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.rest.AbstractServiceClient;
 import kafka.showbacks.demo.common.rest.RetryOnError;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.net.http.HttpRequest;
+import java.util.HashSet;
 import java.util.Set;
 
 //todo add filter by cluster in both
@@ -27,12 +29,14 @@ public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 	}
 
 	//todo create interface
-	public <T> void fillCollectionFromConfluentCloudServiceClient(final Set<T> collectionResult, String cloudUrl) throws KafkaShowBackDemoException {
+	//todo linkedhasmap O time
+	public <T> Set<T> getCollectionFromConfluentCloudServiceClient(String cloudUrl, final TypeReference<Set<T>> typeReference) throws KafkaShowBackDemoException {
 		if (StringUtils.isEmpty(cloudUrl)) {
 			throw new KafkaShowBackDemoException("The cloudUrl parameter can not be null");
 		}
 
 		log.info("Recovering all service accounts for Confluent Cloud environment");
+		final Set<T> results = new HashSet<>();
 
 		while (!StringUtils.isEmpty(cloudUrl)) {
 			final HttpRequest httpRequest = createRequestGETBuilder(cloudUrl);
@@ -44,7 +48,7 @@ public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 			final ConfluentCloudServiceResponse result = mapJsonStringToObjectResponse(ConfluentCloudServiceResponse.class, httpResponse);
 
 			if (result.hasData()) {
-				collectionResult.addAll(result.getData());
+				results.addAll(result.getConfluentCloudDataItem(typeReference));
 			}
 
 			if (result.hasNextPages()) {
@@ -55,6 +59,7 @@ public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 
 		}
 
+		return results;
 	}
 
 }

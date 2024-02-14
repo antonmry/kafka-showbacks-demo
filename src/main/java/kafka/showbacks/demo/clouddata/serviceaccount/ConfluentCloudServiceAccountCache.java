@@ -1,5 +1,6 @@
 package kafka.showbacks.demo.clouddata.serviceaccount;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Joiner;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +21,9 @@ import java.util.regex.Pattern;
 //todo logs exception
 public class ConfluentCloudServiceAccountCache {
 	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceAccountCache.class);
+
+	private static final TypeReference<Set<ConfluentCloudServiceAccountDataItem>> TYPE_REFERENCE = new TypeReference<>() {
+	};
 
 	private static final Pattern pattern = Pattern.compile("Service account for the (.*?),(.*?),(.*?) application");
 
@@ -42,6 +45,7 @@ public class ConfluentCloudServiceAccountCache {
 		this.serviceAccountInformationCache = Caffeine.newBuilder()
 				.expireAfterWrite(cacheExpiredInHours, TimeUnit.HOURS)
 				.build();
+		//todo check here aboiut null
 		this.serviceAccountCloudUrl = Joiner.on("").join(serviceAccountCloudUrl, QUERY_PARAMETER_MAX_PAGE_SIZE);
 	}
 
@@ -58,8 +62,7 @@ public class ConfluentCloudServiceAccountCache {
 		log.info("The cache with the service account and cluster information is empty.");
 
 		try {
-			final Set<ConfluentCloudServiceAccountDataItem> confluentCloudServiceAccountDataItems = new HashSet<>();
-			confluentCloudServiceAccountClient.fillCollectionFromConfluentCloudServiceClient(confluentCloudServiceAccountDataItems, serviceAccountCloudUrl);
+			final Set<ConfluentCloudServiceAccountDataItem> confluentCloudServiceAccountDataItems = confluentCloudServiceAccountClient.getCollectionFromConfluentCloudServiceClient(serviceAccountCloudUrl, TYPE_REFERENCE);
 
 			if (confluentCloudServiceAccountDataItems.isEmpty()) {
 				throw new KafkaShowBackDemoException("It has not been possible to recover the Services accounts. Review if the rest endpoint is working correctly.");

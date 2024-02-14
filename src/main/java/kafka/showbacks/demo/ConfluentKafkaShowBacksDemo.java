@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import kafka.showbacks.demo.clouddata.billing.ConfluentCloudCostService;
 import kafka.showbacks.demo.clouddata.serviceaccount.ConfluentCloudServiceAccountCache;
 import kafka.showbacks.demo.clouddata.serviceaccount.ServiceAccountClusterInformation;
-import kafka.showbacks.demo.clouddata.serviceaccount.topic.ServiceAccountTopic;
 import kafka.showbacks.demo.clustermetrics.ClusterMetricService;
 import kafka.showbacks.demo.clustermetrics.MetricInformation;
 import kafka.showbacks.demo.common.BigDecimalOperations;
@@ -17,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 
 import static kafka.showbacks.demo.CostType.KAFKA_NETWORK_READ;
 import static kafka.showbacks.demo.CostType.KAFKA_NETWORK_WRITE;
-import static kafka.showbacks.demo.CostType.KAFKA_STORAGE;
 import static kafka.showbacks.demo.common.BigDecimalOperations.IS_EQUAL_BIG_DECIMAL;
 import static kafka.showbacks.demo.common.BigDecimalOperations.IS_GREATER_BIG_DECIMAL;
 import static kafka.showbacks.demo.common.BigDecimalOperations.IS_LESS_BIG_DECIMAL;
@@ -58,36 +56,30 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 
 	private final Map<String, ImmutableMap<Instant, List<MetricInformation>>> requestByUsersAccountsGroupByStartTime;
 
-	private final Map<String, ImmutableMap<Instant, List<MetricInformation>>> retainedBytesByUsersAccountsGroupByStartTime;
-
 	private final Map<String, ImmutableMap<Instant, BigDecimal>> ingressGroupedByHourAndCluster;
 
 	private final Map<String, ImmutableMap<Instant, BigDecimal>> egressGroupedByHourAndCluster;
 
 	private final ClusterMetricService confluentCloudMetricService;
 	private final ConfluentCloudServiceAccountCache confluentServiceAccountCache;
-	private final ServiceAccountTopic diracServiceAccountTopicService;
 	private final ConfluentCloudCostService confluentCloudCostService;
 
 	@Inject
 	ConfluentKafkaShowBacksDemo(final ClusterMetricService confluentCloudMetricService,
 	                            final ConfluentCloudServiceAccountCache confluentServiceAccountCache,
-	                            final ConfluentCloudCostService confluentCloudCostService,
-	                            final ServiceAccountTopic diracServiceAccountTopicService) {
+	                            final ConfluentCloudCostService confluentCloudCostService) {
 		this.confluentCloudMetricService = confluentCloudMetricService;
 		this.confluentServiceAccountCache = confluentServiceAccountCache;
-		this.diracServiceAccountTopicService = diracServiceAccountTopicService;
 		this.confluentCloudCostService = confluentCloudCostService;
 
 		this.responseByUsersAccountsGroupByStartTime = new HashMap<>();
 		this.requestByUsersAccountsGroupByStartTime = new HashMap<>();
-		this.retainedBytesByUsersAccountsGroupByStartTime = new HashMap<>();
 		this.ingressGroupedByHourAndCluster = new HashMap<>();
 		this.egressGroupedByHourAndCluster = new HashMap<>();
 	}
 
 	@Override
-	public Set<ClusterCostData> getCostDataByDate(final Date startDate, final Date endDate) throws KafkaShowBackDemoException {
+	public Set<ClusterCostData> getCostDataByDate(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException {
 		return this.confluentCloudCostService.getCostDataByTimeRange(startDate, endDate);
 	}
 
@@ -136,13 +128,6 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 						teamCostDataSet.add(addTotalCostToDefaultOrganization(clusterCostData));
 					}
 				}
-				case KAFKA_STORAGE -> {
-					if (!retainedBytesByUsersAccountsGroupByStartTime.isEmpty()) {
-						teamCostDataSet.addAll(getTeamCostByMetricBytesType(clusterCostData));
-					} else {
-						teamCostDataSet.add(addTotalCostToDefaultOrganization(clusterCostData));
-					}
-				}
 				default -> teamCostDataSet.add(addTotalCostToDefaultOrganization(clusterCostData));
 			}
 		}
@@ -186,7 +171,8 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 				sumCostByTeams = add(sumCostByTeams, teamUsageCost);
 				sumUsageByTeams = add(sumUsageByTeams, teamUsageUsed);
 
-				teamCostDataSet.add(new TeamCostData(serviceAccountInformation.organization(),
+				teamCostDataSet.add(new TeamCostData(clusterCostData.clusterID(),
+						serviceAccountInformation.organization(),
 						serviceAccountInformation.application(),
 						teamUsageCost,
 						teamUsageUsed,
@@ -202,7 +188,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 	}
 
 	/**
-	 * This method returns the cost by team that can be the network write / read / storage
+	 * This method returns the cost by team that can be the network write / read
 	 * The method to calculate these costs are the same, but the network write  use the request bytes, the network read the response bytes and the storage the retention bytes
 	 * To calculate it the total cost in a period of time should be assigned to all teams consuming in the same period proportionally to the amount of data consumed.
 	 */
@@ -224,7 +210,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 				cumulusTotalCostUsed = add(cumulusTotalCostUsed, teamCost);
 				cumulusTotalUsageUsed = add(cumulusTotalUsageUsed, teamUsageUsed);
 
-				teamCostDataSet.add(new TeamCostData(serviceAccountClusterInformation.organization(), serviceAccountClusterInformation.application(), teamCost, teamUsageUsed,
+				teamCostDataSet.add(new TeamCostData(clusterCostData.clusterID(), serviceAccountClusterInformation.organization(), serviceAccountClusterInformation.application(), teamCost, teamUsageUsed,
 						clusterCostData.startPeriod(), clusterCostData.endPeriod(), clusterCostData.costType()));
 
 			}
@@ -244,12 +230,6 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 
 		if (clusterCostData.costType().equals(KAFKA_NETWORK_READ)) {
 			return getMetricValueFromClusterAndStartPeriod(responseByUsersAccountsGroupByStartTime,
-					clusterCostData.clusterID(),
-					clusterCostData.startPeriod(), Collections.EMPTY_LIST);
-		}
-
-		if (clusterCostData.costType().equals(KAFKA_STORAGE)) {
-			return getMetricValueFromClusterAndStartPeriod(retainedBytesByUsersAccountsGroupByStartTime,
 					clusterCostData.clusterID(),
 					clusterCostData.startPeriod(), Collections.EMPTY_LIST);
 		}
@@ -276,7 +256,6 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 
 					case KAFKA_NETWORK_READ -> fillResponseBytesMapByUserAccount(clusterId, startPeriod, endPeriod);
 					case KAFKA_NETWORK_WRITE -> fillRequestBytesMapByUserAccount(clusterId, startPeriod, endPeriod);
-					case KAFKA_STORAGE -> fillRetentionBytesByUserAccount(clusterId, startPeriod, endPeriod);
 				}
 
 			}
@@ -311,46 +290,18 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 		}
 	}
 
-	/**
-	 * To calculate the storage we are using the retained bytes metric. This metric is exposed grouped by topic.
-	 * We need to know the relation between topics and service accounts. To do it we need to sum all topics by instant that a service account is using.
-	 * This method fill this relation the retained bytes by service accounts (sum the retention of all topics that this sa is consuming by hour) grouped by instants.
-	 */
-	private void fillRetentionBytesByUserAccount(final String clusterId, final Instant startPeriod, final Instant endPeriod) throws KafkaShowBackDemoException {
-		final Map<Instant, List<MetricInformation>> retainedBytesInTopicsGroupedByInstant = confluentCloudMetricService
-				.getRetainedBytesTopicGroupedByHour(clusterId, startPeriod, endPeriod);
-		final Map<Instant, List<MetricInformation>> metricInformationGroupedByInstant = new HashMap<>();
-
-		final Map<String, Set<String>> serviceAccountListGroupedByTopicsFilteredByCluster = diracServiceAccountTopicService.getServiceAccountGroupedByTopicInCluster(clusterId);
-
-		for (Map.Entry<Instant, List<MetricInformation>> retainedBytesByInstant : retainedBytesInTopicsGroupedByInstant.entrySet()) {
-			final Map<String, BigDecimal> serviceAccountInformationMap = new HashMap<>();
-			final Instant startTime = retainedBytesByInstant.getKey();
-			for (MetricInformation topicRetention : retainedBytesByInstant.getValue()) {
-
-				if (serviceAccountListGroupedByTopicsFilteredByCluster.containsKey(topicRetention.metricIdentifier())) {
-
-					for (String serviceAccount : serviceAccountListGroupedByTopicsFilteredByCluster.get(topicRetention.metricIdentifier())) {
-						serviceAccountInformationMap.compute(serviceAccount, (k, v) -> (v == null) ? topicRetention.value() : add(v, topicRetention.value()));
-					}
-				}
-			}
-			metricInformationGroupedByInstant.put(startTime, serviceAccountInformationMap.entrySet().stream()
-					.map(v -> new MetricInformation(v.getKey(), startTime, v.getValue())).collect(Collectors.toList()));
-		}
-
-		retainedBytesByUsersAccountsGroupByStartTime.put(clusterId, ImmutableMap.copyOf(metricInformationGroupedByInstant));
-	}
-
-
-	private Map<CostType, Map<String, List<ClusterCostData>>> getMapGroupByCostAndCluster(final Set<ClusterCostData> clusterCostDataSet) {
+	private Map<CostType, Map<String, List<ClusterCostData>>> getMapGroupByCostAndCluster(final Set<ClusterCostData> clusterCostDataSet) throws KafkaShowBackDemoException {
 		final Map<CostType, Map<String, List<ClusterCostData>>> mapGroupByCostAndCluster = new HashMap<>();
 		for (CostType costType : CostType.values()) {
 			if (clusterCostDataSet.stream().anyMatch(costData -> costData.costType().equals(costType))) {
-				mapGroupByCostAndCluster.put(costType,
-						clusterCostDataSet.stream()
-								.filter(clusterCostData -> clusterCostData.costType().equals(costType))
-								.collect(Collectors.groupingBy(ClusterCostData::clusterID)));
+				try {
+					mapGroupByCostAndCluster.put(costType,
+							clusterCostDataSet.stream()
+									.filter(clusterCostData -> clusterCostData.costType().equals(costType))
+									.collect(Collectors.groupingBy(ClusterCostData::clusterID)));
+				} catch (RuntimeException runtimeException) { //TODO
+					throw new KafkaShowBackDemoException("Error grouping by cluster & cost type.", runtimeException);
+				}
 			}
 		}
 		return mapGroupByCostAndCluster;
@@ -379,7 +330,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 			log.warn("The calculation of total usage used: {} is bigger than total amount usage received {}", sumUsageTeamsAndRest, clusterCostData.clusterTotalUsage());
 		}
 
-		return new TeamCostData(DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, totalCostRest, totalUsageRest,
+		return new TeamCostData(clusterCostData.clusterID(), DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, totalCostRest, totalUsageRest,
 				clusterCostData.startPeriod(), clusterCostData.endPeriod(), clusterCostData.costType());
 	}
 
@@ -422,7 +373,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 		log.warn("No action/data found for {} cost type and cluster {}. The total cost will include in the default organization ({}).",
 				clusterCostData.costType(), clusterCostData.clusterID(), DEFAULT_ORGANIZATION);
 
-		return new TeamCostData(DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, clusterCostData.clusterTotalCost(), clusterCostData.clusterTotalUsage(), clusterCostData.startPeriod(),
+		return new TeamCostData(clusterCostData.clusterID(), DEFAULT_ORGANIZATION, DEFAULT_APPLICATION, clusterCostData.clusterTotalCost(), clusterCostData.clusterTotalUsage(), clusterCostData.startPeriod(),
 				clusterCostData.endPeriod(), clusterCostData.costType());
 	}
 }

@@ -101,6 +101,7 @@ class MetricBody {
 	}
 
 	static class MetricBodyBuilder {
+		private static final String DEFAULT_GRANULARITY_ONE_DAY = "P1D";
 		private final Set<Aggregation> aggregations;
 		private String cluster;
 		private String granularity;
@@ -112,7 +113,7 @@ class MetricBody {
 		MetricBodyBuilder() {
 			this.operation = "EQ";
 			this.field = "resource.kafka.id";
-			this.granularity = "PT1H";
+			this.granularity = DEFAULT_GRANULARITY_ONE_DAY;
 			this.intervals = new HashSet<>();
 			this.groupBy = new HashSet<>();
 			this.aggregations = new HashSet<>();

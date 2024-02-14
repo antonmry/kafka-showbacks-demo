@@ -1,9 +1,10 @@
 package kafka.showbacks.demo.clouddata.serviceaccount;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kafka.showbacks.demo.clouddata.ConfluentCloudDataItem;
 
 //todo change to record
-class ConfluentCloudServiceAccountDataItem {
+public class ConfluentCloudServiceAccountDataItem implements ConfluentCloudDataItem {
 
 	@JsonProperty("description")
 	private String description;

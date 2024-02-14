@@ -1,0 +1,17 @@
+confluent:
+  apiKey: ${CONFLUENT_API_KEY}
+  apiSecret: ${CONFLUENT_API_SECRET}
+  cloudServiceAccountUrl: ${CONFLUENT_SERVICE_ACCOUNT_URL}
+  cloudBillingUrl: ${CONFLUENT_BILLING_URL}
+  telemetryUrl: ${CONFLUENT_TELEMETRY_URL}
+  clustersIdList: ${CONFLUENT_CLUSTER_LIST}
+
+initialDelaySeconds: 10
+periodInSeconds: 86400
+requestTimeOutInSeconds: 30
+
+newrelic:
+  licenseApiKey: ${NR_LICENSE_API_KEY}
+  eventAPIUrl: ${NR_CUSTOM_EVENT_API_URL}
+  eventType: KafkaShowBackDemo
+  accountId: ${NR_ACCOUNT_ID}
