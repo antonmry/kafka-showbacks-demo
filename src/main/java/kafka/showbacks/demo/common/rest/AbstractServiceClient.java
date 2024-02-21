@@ -8,8 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Joiner;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -29,7 +29,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 //todo check exceptions error message log
 //todo warnings
 public class AbstractServiceClient {
-	private static final Logger log = LoggerFactory.getLogger(AbstractServiceClient.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final HttpClient httpClient = HttpClient.newBuilder().build();
 

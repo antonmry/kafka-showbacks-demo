@@ -5,8 +5,8 @@ import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.rest.AbstractServiceClient;
 import kafka.showbacks.demo.common.rest.RetryOnError;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.net.http.HttpRequest;
@@ -16,7 +16,7 @@ import java.util.Set;
 //todo add filter by cluster in both
 public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 
-	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceClient.class);
+	private static final Logger log = LogManager.getLogger();
 
 	@Inject
 	public ConfluentCloudServiceClient(final String confluentAPIKey,

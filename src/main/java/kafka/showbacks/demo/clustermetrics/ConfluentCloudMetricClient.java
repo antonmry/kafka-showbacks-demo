@@ -8,8 +8,8 @@ import kafka.showbacks.demo.common.rest.AbstractServiceClient;
 import kafka.showbacks.demo.common.rest.ResponseObject;
 import kafka.showbacks.demo.common.rest.RetryOnError;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.net.http.HttpRequest;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 
 public class ConfluentCloudMetricClient extends AbstractServiceClient implements ClusterMetricClient {
-	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudMetricClient.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final String QUERY_PARAMETER_PAGE_TOKEN = "?page_token=";
 

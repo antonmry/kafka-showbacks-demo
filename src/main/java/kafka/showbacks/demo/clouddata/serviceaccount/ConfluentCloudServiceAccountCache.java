@@ -7,8 +7,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 //todo logs exception
 public class ConfluentCloudServiceAccountCache {
-	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceAccountCache.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final TypeReference<Set<ConfluentCloudServiceAccountDataItem>> TYPE_REFERENCE = new TypeReference<>() {
 	};

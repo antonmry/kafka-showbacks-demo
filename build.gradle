@@ -16,10 +16,15 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.0' //todo we need this for the jackson
+
     implementation 'com.google.dagger:dagger:2.50'
     annotationProcessor "com.google.dagger:dagger-compiler:2.50"
 
-    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.apache.logging.log4j:log4j-api:2.22.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.22.1'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.22.1'
+
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
     implementation 'io.dropwizard:dropwizard-core:4.0.5'
 

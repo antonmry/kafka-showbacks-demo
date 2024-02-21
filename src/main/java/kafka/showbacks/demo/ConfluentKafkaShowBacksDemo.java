@@ -1,7 +1,7 @@
 package kafka.showbacks.demo;
 
 import com.google.common.collect.ImmutableMap;
-import kafka.showbacks.demo.clouddata.billing.ConfluentCloudCostService;
+import kafka.showbacks.demo.clouddata.billing.CloudCostService;
 import kafka.showbacks.demo.clouddata.serviceaccount.ConfluentCloudServiceAccountCache;
 import kafka.showbacks.demo.clouddata.serviceaccount.ServiceAccountClusterInformation;
 import kafka.showbacks.demo.clustermetrics.ClusterMetricService;
@@ -10,8 +10,8 @@ import kafka.showbacks.demo.common.BigDecimalOperations;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
 import kafka.showbacks.demo.common.model.TeamCostData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -41,7 +41,7 @@ import static kafka.showbacks.demo.common.BigDecimalOperations.subtract;
 //todo number classes study
 public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 
-	private static final Logger log = LoggerFactory.getLogger(ConfluentKafkaShowBacksDemo.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final String DEFAULT_ORGANIZATION = "KPT";
 	private static final String DEFAULT_APPLICATION = "kafka_platform";
@@ -62,12 +62,12 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 
 	private final ClusterMetricService confluentCloudMetricService;
 	private final ConfluentCloudServiceAccountCache confluentServiceAccountCache;
-	private final ConfluentCloudCostService confluentCloudCostService;
+	private final CloudCostService confluentCloudCostService;
 
 	@Inject
 	ConfluentKafkaShowBacksDemo(final ClusterMetricService confluentCloudMetricService,
 	                            final ConfluentCloudServiceAccountCache confluentServiceAccountCache,
-	                            final ConfluentCloudCostService confluentCloudCostService) {
+	                            final CloudCostService confluentCloudCostService) {
 		this.confluentCloudMetricService = confluentCloudMetricService;
 		this.confluentServiceAccountCache = confluentServiceAccountCache;
 		this.confluentCloudCostService = confluentCloudCostService;

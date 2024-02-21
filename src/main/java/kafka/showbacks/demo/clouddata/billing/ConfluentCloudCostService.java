@@ -6,8 +6,8 @@ import kafka.showbacks.demo.CostType;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -17,16 +17,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//todo interface
-//todo log level
 //todo exceptions register
 //todo warnings
 //todo cache... take into accounts dates
-public final class ConfluentCloudCostService {
+public final class ConfluentCloudCostService implements CloudCostService {
 	//todo check
 	private static final TypeReference<Set<ConfluentCloudServiceCostDataItem>> TYPE_REFERENCE = new TypeReference<>() {
 	};
-	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudCostService.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final String QUERY_PARAMETER_MAX_PAGE_SIZE = "?start_date=%s&end_date=%s&page_size=10000";
 
@@ -45,6 +43,7 @@ public final class ConfluentCloudCostService {
 	}
 
 	//todo cluster??
+	@Override
 	public Set<ClusterCostData> getCostDataByTimeRange(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException {
 		//todo how to send parameters
 		log.info("Getting cost by time range and cluster");

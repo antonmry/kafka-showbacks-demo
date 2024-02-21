@@ -6,8 +6,8 @@ import kafka.showbacks.demo.common.model.ClusterCostData;
 import kafka.showbacks.demo.common.model.TeamCostData;
 import kafka.showbacks.demo.outputdata.OutputDataService;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 //TODO The query to fill the collection from cloud API return more than one page
 class KafkaShowBacksDemoService extends AbstractScheduledService {
 
-	private static final Logger log = LoggerFactory.getLogger(KafkaShowBacksDemoService.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private final KafkaShowBacksDemo kafkaShowBacksDemo;
 
