@@ -22,13 +22,14 @@ resource "confluent_environment" "development" {
   }
 }
 
-resource "confluent_kafka_cluster" "basic" {
+resource "confluent_kafka_cluster" "dedicated" {
   display_name = REPLACE_BY_CLUSTER_NAME
   availability = "SINGLE_ZONE" # can be replaced by multi zone
   cloud        = REPLACE_BY_CLOUD_PROVIDER
   region       = REPLACE_BY_CLOUD_REGION
-  basic {}
-
+  dedicated {
+    cku = 1
+  }
   environment {
     id = confluent_environment.development.id
   }

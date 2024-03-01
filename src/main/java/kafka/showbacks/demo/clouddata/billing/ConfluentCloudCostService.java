@@ -17,11 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//todo exceptions register
-//todo warnings
-//todo cache... take into accounts dates
 public final class ConfluentCloudCostService implements CloudCostService {
-	//todo check
 	private static final TypeReference<Set<ConfluentCloudServiceCostDataItem>> TYPE_REFERENCE = new TypeReference<>() {
 	};
 	private static final Logger log = LogManager.getLogger();
@@ -42,11 +38,10 @@ public final class ConfluentCloudCostService implements CloudCostService {
 		this.billingCloudUrl = billingCloudUrl;
 	}
 
-	//todo cluster??
 	@Override
 	public Set<ClusterCostData> getCostDataByTimeRange(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException {
-		//todo how to send parameters
-		log.info("Getting cost by time range and cluster");
+		log.info("Getting cost by time range and cluster from {} until {}", startDate, endDate);
+
 		final String urlWithRangeTime = Joiner.on("").join(billingCloudUrl, String.format(QUERY_PARAMETER_MAX_PAGE_SIZE, startDate.toString(), endDate.toString()));
 
 		final Set<ConfluentCloudServiceCostDataItem> confluentCloudServiceCostDataItemSet = this.confluentCloudCostServiceClient.getCollectionFromConfluentCloudServiceClient(urlWithRangeTime, TYPE_REFERENCE);
@@ -55,8 +50,8 @@ public final class ConfluentCloudCostService implements CloudCostService {
 	}
 
 	private Set<ClusterCostData> mapDataItemCostToClusterCostData(final Set<ConfluentCloudServiceCostDataItem> confluentCloudServiceCostDataItemSet) throws KafkaShowBackDemoException {
+		log.info("Mapping cluster cost data results {}", confluentCloudServiceCostDataItemSet.size());
 		try {
-			log.info("Mapping cluster cost data results {}", confluentCloudServiceCostDataItemSet.size());
 			return confluentCloudServiceCostDataItemSet.stream()
 					.filter(item -> VALID_COST_TYPE.containsKey(item.costType()))
 					.map(item -> new ClusterCostData(CostType.valueOf(item.costType()), item.amount(),
@@ -64,9 +59,8 @@ public final class ConfluentCloudCostService implements CloudCostService {
 							item.startPeriod().atStartOfDay().toInstant(ZoneOffset.UTC),
 							item.endPeriod().atStartOfDay().toInstant(ZoneOffset.UTC)))
 					.collect(Collectors.toSet());
-
-		} catch (RuntimeException runTimeException) { //todo review this exception
-			throw new KafkaShowBackDemoException("Error mapping cluster cost data", runTimeException);
+		} catch (NullPointerException | IllegalArgumentException exception) {
+			throw new KafkaShowBackDemoException("Error mapping cluster cost data result", exception);
 		}
 	}
 }

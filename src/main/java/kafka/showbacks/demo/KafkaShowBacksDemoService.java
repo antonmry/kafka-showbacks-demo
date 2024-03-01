@@ -50,7 +50,7 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 		this.clustersId = clustersIdSet;
 		this.initialDelayInSeconds = initialDelaySeconds;
 		this.periodInSeconds = periodInSeconds;
-		this.daysToSubtract = demoMode ? 1 : 7; //todo constants
+		this.daysToSubtract = demoMode ? 7 : 1; //todo constants
 	}
 
 	@Override
@@ -93,7 +93,7 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	private Set<ClusterCostData> getBillingDataForDate() {
 		//local date vs da
 		final LocalDate startDate = LocalDate.now().minusDays(this.daysToSubtract);
-		final LocalDate endDate = LocalDate.now().minusDays(1);
+		final LocalDate endDate = LocalDate.now();
 
 		log.info("Searching data billing from {} until {}.", startDate, endDate);
 

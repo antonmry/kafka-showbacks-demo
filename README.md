@@ -1,7 +1,24 @@
 # kafka-showbacks-demo
 
-## Create Confluent cluster with terraform
+## Run locally
 
-# Create service account
+### Environment variables
 
-Format
+### Demo mode / service mode
+
+## Setup
+
+### Create Confluent cluster with terraform
+
+### Create service account & topics
+
+### Produce data
+
+## Support links
+
+- Confluent cli.
+- Confluent tools
+- Terraform
+
+
+
