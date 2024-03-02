@@ -13,7 +13,6 @@ import java.net.http.HttpRequest;
 import java.util.HashSet;
 import java.util.Set;
 
-//todo add filter by cluster in both
 public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 
 	private static final Logger log = LogManager.getLogger();
@@ -28,9 +27,7 @@ public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 				BASIC_CONTENT_TYPE_KEY_HEADER, BASIC_CONTENT_TYPE_VALUE_HEADER);
 	}
 
-	//todo create interface
-	//todo linkedhasmap O time
-	public <T> Set<T> getCollectionFromConfluentCloudServiceClient(String cloudUrl, final TypeReference<Set<T>> typeReference) throws KafkaShowBackDemoException {
+	public <T extends ConfluentCloudDataItem> Set<T> getCollectionFromConfluentCloudServiceClient(String cloudUrl, final TypeReference<Set<T>> typeReference) throws KafkaShowBackDemoException {
 		if (StringUtils.isEmpty(cloudUrl)) {
 			throw new KafkaShowBackDemoException("The cloudUrl parameter can not be null");
 		}
@@ -52,7 +49,7 @@ public final class ConfluentCloudServiceClient extends AbstractServiceClient {
 			}
 
 			if (result.hasNextPages()) {
-				cloudUrl = result.getMetadata().getNext();
+				cloudUrl = result.getMetadata().next();
 
 				log.info("The query to fill the collection from cloud API return more than one page");
 			}

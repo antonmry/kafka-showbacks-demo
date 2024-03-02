@@ -6,7 +6,6 @@ import io.dropwizard.core.Configuration;
 
 import javax.inject.Singleton;
 
-//todo check why
 @Module
 public interface KafkaShowBackDemoConfigurationModule {
 

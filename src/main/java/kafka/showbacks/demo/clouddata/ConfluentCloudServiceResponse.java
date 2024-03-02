@@ -41,7 +41,7 @@ class ConfluentCloudServiceResponse implements ResponseObject {
 	//todo review
 	//todo send class intsead of enum
 	//todo T?
-	<T> Set<T> getConfluentCloudDataItem(final TypeReference<Set<T>> typeReference) {
+	<T extends ConfluentCloudDataItem> Set<T> getConfluentCloudDataItem(final TypeReference<Set<T>> typeReference) {
 		try {
 			return objectMapper.readValue(data.toString(), typeReference);
 		} catch (final JsonProcessingException jsonProcessingException) {
@@ -57,7 +57,7 @@ class ConfluentCloudServiceResponse implements ResponseObject {
 
 	@Override
 	public boolean hasNextPages() {
-		return metadata != null && metadata.getNext() != null;
+		return metadata != null && metadata.next() != null;
 	}
 
 }

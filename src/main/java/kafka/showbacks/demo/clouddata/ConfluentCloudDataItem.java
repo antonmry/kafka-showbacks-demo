@@ -1,5 +1,5 @@
 package kafka.showbacks.demo.clouddata;
 
-//todo
+//todo to check if it's needed for generic object
 public interface ConfluentCloudDataItem {
 }

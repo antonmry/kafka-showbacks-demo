@@ -25,9 +25,6 @@ import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-//todo check log
-//todo check exceptions error message log
-//todo warnings
 public class AbstractServiceClient {
 	private static final Logger log = LogManager.getLogger();
 
@@ -35,7 +32,6 @@ public class AbstractServiceClient {
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	//todo enum
 	protected static final String BASIC_CONTENT_TYPE_KEY_HEADER = "Content-Type";
 
 	protected static final String BASIC_CONTENT_TYPE_VALUE_HEADER = "application/json";
@@ -95,6 +91,7 @@ public class AbstractServiceClient {
 
 
 	private HttpRequest.Builder getBasicRequestBuilder(final String url) throws KafkaShowBackDemoException {
+		log.info("Request builder created for {}", url);
 		try {
 			return HttpRequest.newBuilder()
 					.uri(new URI(url))
