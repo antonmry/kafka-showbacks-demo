@@ -57,7 +57,7 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 		if (StringUtils.isEmpty(this.eventAPIUrl)) {
 			throw new KafkaShowBackDemoException("The eventAPIUrl parameter can not be null");
 		}
-		//final int numberOfBatches = !teamCostDataSet.isEmpty() ? IntMath.divide(teamCostDataSet.size(), LIMIT_NUMBER_OF_RECORDS_TO_SEND, RoundingMode.CEILING) : 0;
+
 		final Iterable<List<TeamCostData>> subSetsTeamCostData = Iterables.partition(teamCostDataSet, LIMIT_NUMBER_OF_RECORDS_TO_SEND);
 
 		subSetsTeamCostData.forEach(listTeamCostData -> {
