@@ -51,7 +51,6 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 	}
 
 	//todo kafkaProvider
-	//todo store duplicated
 	@Override
 	public void sendOutputData(final Set<TeamCostData> teamCostDataSet, final String kafkaProvider) throws KafkaShowBackDemoException {
 		if (StringUtils.isEmpty(this.eventAPIUrl)) {

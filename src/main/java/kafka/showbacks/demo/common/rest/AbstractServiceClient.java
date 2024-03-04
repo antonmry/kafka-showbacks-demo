@@ -91,7 +91,7 @@ public class AbstractServiceClient {
 
 
 	private HttpRequest.Builder getBasicRequestBuilder(final String url) throws KafkaShowBackDemoException {
-		log.info("Request builder created for {}", url);
+		log.debug("Request builder created for {}", url);
 		try {
 			return HttpRequest.newBuilder()
 					.uri(new URI(url))
