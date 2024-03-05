@@ -6,7 +6,8 @@ plugins {
 group 'org.example'
 version '1.0-SNAPSHOT'
 
-//gradle run --args='server src/main/resources/server.yml'
+//  source ../execute_before_demo.sh
+//./gradlew run --args='server src/main/resources/server.yml'
 application {
     mainClassName = "kafka.showbacks.demo.KafkaShowBackDemoApplication"
 }

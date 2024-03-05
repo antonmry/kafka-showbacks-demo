@@ -1,5 +1,14 @@
 # kafka-showback-demo
 
+KafkaShowbacksDemo split the cost supplied by the Cloud provider by teams/applications. To be aware about the
+different costs that we have in our Kafka environments can help to detect problems related with incorrect
+configurations.
+
+KafkaShowbacksDemo works with Kafka Confluent environment due that the Confluent Cloud provide a complete set of API to
+get the information that we need to calculate the costs. The costs calculated are sent to NewRelicDB.
+
+![](docs/arquitecture.png)
+
 ## Service account format
 
 As in the introduction has been mentioned one of the goals of this KafkaShowBackDemo service is assign the different

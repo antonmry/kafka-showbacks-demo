@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//todo async
 //todo review api limitations to do post
 //todo another intermediate class
 public final class NR1OutputDataService extends AbstractServiceClient implements OutputDataService {
