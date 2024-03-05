@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import kafka.showbacks.demo.common.rest.ResponseObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collections;
 import java.util.Set;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 class ConfluentCloudServiceResponse implements ResponseObject {
 
-	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceResponse.class);
+	private static final Logger log = LogManager.getLogger();
 	//todo
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -41,7 +41,7 @@ class ConfluentCloudServiceResponse implements ResponseObject {
 	//todo review
 	//todo send class intsead of enum
 	//todo T?
-	<T> Set<T> getConfluentCloudDataItem(final TypeReference<Set<T>> typeReference) {
+	<T extends ConfluentCloudDataItem> Set<T> getConfluentCloudDataItem(final TypeReference<Set<T>> typeReference) {
 		try {
 			return objectMapper.readValue(data.toString(), typeReference);
 		} catch (final JsonProcessingException jsonProcessingException) {
@@ -57,7 +57,7 @@ class ConfluentCloudServiceResponse implements ResponseObject {
 
 	@Override
 	public boolean hasNextPages() {
-		return metadata != null && metadata.getNext() != null;
+		return metadata != null && metadata.next() != null;
 	}
 
 }

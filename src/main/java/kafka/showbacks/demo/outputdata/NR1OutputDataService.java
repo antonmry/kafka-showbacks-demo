@@ -11,8 +11,8 @@ import kafka.showbacks.demo.common.rest.AbstractServiceClient;
 import kafka.showbacks.demo.common.rest.RetryOnError;
 import kafka.showbacks.demo.configuration.NR1Configuration;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.http.HttpRequest;
 import java.time.Instant;
@@ -21,12 +21,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//todo async
 //todo review api limitations to do post
 //todo another intermediate class
 public final class NR1OutputDataService extends AbstractServiceClient implements OutputDataService {
 
-	private static final Logger log = LoggerFactory.getLogger(NR1OutputDataService.class);
+	private static final Logger log = LogManager.getLogger();
 
 	//todo configuration panel
 	private static final int LIMIT_NUMBER_OF_RECORDS_TO_SEND = 1_500;
@@ -51,13 +50,12 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 	}
 
 	//todo kafkaProvider
-	//todo store duplicated
 	@Override
 	public void sendOutputData(final Set<TeamCostData> teamCostDataSet, final String kafkaProvider) throws KafkaShowBackDemoException {
 		if (StringUtils.isEmpty(this.eventAPIUrl)) {
 			throw new KafkaShowBackDemoException("The eventAPIUrl parameter can not be null");
 		}
-		//final int numberOfBatches = !teamCostDataSet.isEmpty() ? IntMath.divide(teamCostDataSet.size(), LIMIT_NUMBER_OF_RECORDS_TO_SEND, RoundingMode.CEILING) : 0;
+
 		final Iterable<List<TeamCostData>> subSetsTeamCostData = Iterables.partition(teamCostDataSet, LIMIT_NUMBER_OF_RECORDS_TO_SEND);
 
 		subSetsTeamCostData.forEach(listTeamCostData -> {
@@ -68,7 +66,7 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 
 					final HttpRequest httpRequest = createRequestPOSTBuilder(jsonPayload.get(),
 							this.eventAPIUrl);
-
+					//todo handle response
 					final String httpResponse = getHttpResponse(httpRequest).orElseThrow(
 							() -> new KafkaShowBackDemoException("The process to send data to N1 has failed."));
 

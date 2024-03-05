@@ -31,12 +31,4 @@ public interface KafkaShowBacksDemoComponent {
 
 		KafkaShowBacksDemoComponent build();
 	}
-
-	/*@Named("
-	")
-	KafkaShowBacksDemo buildConfluentCloudShowBacks();
-
-	@Named("anotherKafkaEnvironmentTeamUsageCost")
-	KafkaShowBacksDemo buildMSKTeamUsageCost();*/
-
 }

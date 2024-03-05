@@ -3,9 +3,6 @@ package kafka.showbacks.demo.configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.core.Configuration;
 
-//todo records
-//todo Configuratoions class is not needed /neither json records...
-//todo log configuration
 public class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	@JsonProperty(value = "requestTimeOutInSeconds", defaultValue = "30")

@@ -7,8 +7,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -18,9 +18,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//todo logs exception
 public class ConfluentCloudServiceAccountCache {
-	private static final Logger log = LoggerFactory.getLogger(ConfluentCloudServiceAccountCache.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final TypeReference<Set<ConfluentCloudServiceAccountDataItem>> TYPE_REFERENCE = new TypeReference<>() {
 	};
@@ -33,7 +32,6 @@ public class ConfluentCloudServiceAccountCache {
 
 	private final String serviceAccountCloudUrl;
 
-	//todo ...
 	private static final String QUERY_PARAMETER_MAX_PAGE_SIZE = "?page_size=100";
 
 
@@ -45,7 +43,6 @@ public class ConfluentCloudServiceAccountCache {
 		this.serviceAccountInformationCache = Caffeine.newBuilder()
 				.expireAfterWrite(cacheExpiredInHours, TimeUnit.HOURS)
 				.build();
-		//todo check here aboiut null
 		this.serviceAccountCloudUrl = Joiner.on("").join(serviceAccountCloudUrl, QUERY_PARAMETER_MAX_PAGE_SIZE);
 	}
 
@@ -77,9 +74,9 @@ public class ConfluentCloudServiceAccountCache {
 	private Map<String, ServiceAccountClusterInformation> mapConfluentCloudServiceAccountResponse(final Set<ConfluentCloudServiceAccountDataItem> confluentCloudServiceAccountDataItems) {
 		final Map<String, ServiceAccountClusterInformation> mapServiceAccountClusterInformation = new HashMap<>();
 		confluentCloudServiceAccountDataItems.forEach(record -> {
-			final Matcher matcher = pattern.matcher(record.getDescription());
+			final Matcher matcher = pattern.matcher(record.description());
 			if (matcher.find() && matcher.groupCount() > 2) {
-				mapServiceAccountClusterInformation.put(record.getId(), new ServiceAccountClusterInformation(matcher.group(1), matcher.group(2), matcher.group(3)));
+				mapServiceAccountClusterInformation.put(record.id(), new ServiceAccountClusterInformation(matcher.group(1), matcher.group(2), matcher.group(3)));
 			}
 		});
 		return mapServiceAccountClusterInformation;

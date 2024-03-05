@@ -4,9 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 enum MetricType {
 	REQUEST_BYTES("io.confluent.kafka.server/request_bytes", "metric.principal_id"),
-	CLUSTER_LOAD_PERCENT("io.confluent.kafka.server/cluster_load_percent", StringUtils.EMPTY),
 	RESPONSE_BYTES("io.confluent.kafka.server/response_bytes", "metric.principal_id"),
-	KAFKA_STORAGE("io.confluent.kafka.server/retained_bytes", "metric.topic"),
 	RECEIVE_BYTES("io.confluent.kafka.server/received_bytes", StringUtils.EMPTY),
 	SEND_BYTES("io.confluent.kafka.server/sent_bytes", StringUtils.EMPTY);
 

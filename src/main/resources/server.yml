@@ -1,5 +1,5 @@
 confluent:
-  apiKey: ${CONFLUENT_API_KEY}
+  apiKey: ${CONFLUENT_API_KEY} #use one wil limit acces to new cluster
   apiSecret: ${CONFLUENT_API_SECRET}
   cloudServiceAccountUrl: ${CONFLUENT_SERVICE_ACCOUNT_URL}
   cloudBillingUrl: ${CONFLUENT_BILLING_URL}

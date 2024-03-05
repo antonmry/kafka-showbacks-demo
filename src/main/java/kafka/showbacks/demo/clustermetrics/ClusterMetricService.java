@@ -18,18 +18,6 @@ public interface ClusterMetricService {
 
 	ImmutableMap<Instant, List<MetricInformation>> getServicesAccountRequestBytesByClusterIdGroupedByHour(final String clusterId, final Instant startInstant, final Instant endInstant) throws KafkaShowBackDemoException;
 
-	/**
-	 * This request can not be used currently due the results are not corrects.
-	 * Confluent team is working to fix it and when this will fix, we will use this again
-	 * to recover the percentage of usage in the cluster
-	 */
-	ImmutableMap<Instant, BigDecimal> getPercentageOfUsageByClusterGroupByHour(final String clusterId, final Instant startInstant, final Instant endInstant) throws KafkaShowBackDemoException;
-
-	/**
-	 * Return a map that contains start time with and a list associated with the topic and retained bytes during this time.
-	 */
-	ImmutableMap<Instant, List<MetricInformation>> getRetainedBytesTopicGroupedByHour(final String clusterId, final Instant startInstant, final Instant endInstant) throws KafkaShowBackDemoException;
-
 	ImmutableMap<Instant, BigDecimal> getReceiveBytesByClusterGroupByHour(final String clusterId, final Instant startInstant, final Instant endInstant) throws KafkaShowBackDemoException;
 
 	ImmutableMap<Instant, BigDecimal> getSendBytesByClusterGroupByHour(final String clusterId, final Instant startInstant, final Instant endInstant) throws KafkaShowBackDemoException;

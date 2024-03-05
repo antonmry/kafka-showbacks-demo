@@ -1,14 +1,14 @@
 package kafka.showbacks.demo.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
 public final class BigDecimalOperations {
-	private static final Logger log = LoggerFactory.getLogger(BigDecimalOperations.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final MathContext DEFAULT_MATH_CONTEXT = new MathContext(34, RoundingMode.DOWN);
 	private static final BigDecimal ONE_HUNDRED_VALUES = new BigDecimal("100");

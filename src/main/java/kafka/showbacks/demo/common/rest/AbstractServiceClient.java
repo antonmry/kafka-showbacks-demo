@@ -8,8 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Joiner;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -25,17 +25,13 @@ import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-//todo check log
-//todo check exceptions error message log
-//todo warnings
 public class AbstractServiceClient {
-	private static final Logger log = LoggerFactory.getLogger(AbstractServiceClient.class);
+	private static final Logger log = LogManager.getLogger();
 
 	private static final HttpClient httpClient = HttpClient.newBuilder().build();
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	//todo enum
 	protected static final String BASIC_CONTENT_TYPE_KEY_HEADER = "Content-Type";
 
 	protected static final String BASIC_CONTENT_TYPE_VALUE_HEADER = "application/json";
@@ -95,6 +91,7 @@ public class AbstractServiceClient {
 
 
 	private HttpRequest.Builder getBasicRequestBuilder(final String url) throws KafkaShowBackDemoException {
+		log.debug("Request builder created for {}", url);
 		try {
 			return HttpRequest.newBuilder()
 					.uri(new URI(url))

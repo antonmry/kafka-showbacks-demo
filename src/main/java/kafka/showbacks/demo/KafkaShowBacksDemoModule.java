@@ -3,6 +3,7 @@ package kafka.showbacks.demo;
 import dagger.Module;
 import dagger.Provides;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
+import kafka.showbacks.demo.clouddata.billing.CloudCostService;
 import kafka.showbacks.demo.clouddata.billing.ConfluentCloudCostService;
 import kafka.showbacks.demo.clouddata.serviceaccount.ConfluentCloudServiceAccountCache;
 import kafka.showbacks.demo.clustermetrics.ClusterMetricClient;
@@ -54,8 +55,8 @@ public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton
-	static ConfluentCloudCostService confluentCloudCostService(final ConfluentCloudServiceClient confluentCloudServiceClient,
-	                                                           final ConfluentConfiguration confluentConfiguration) {
+	static CloudCostService confluentCloudCostService(final ConfluentCloudServiceClient confluentCloudServiceClient,
+	                                                  final ConfluentConfiguration confluentConfiguration) {
 		return new ConfluentCloudCostService(confluentCloudServiceClient, confluentConfiguration.cloudBillingUrl());
 	}
 
@@ -64,7 +65,7 @@ public interface KafkaShowBacksDemoModule {
 	@Named("confluentCloudShowBacks") //todo add exemple to other kafka environment
 	static KafkaShowBacksDemo confluentCloudShowBacks(@Named("confluentCloudMetricService") final ClusterMetricService confluentCloudMetricService,
 	                                                  final ConfluentCloudServiceAccountCache confluentCloudServiceAccountCache,
-	                                                  final ConfluentCloudCostService confluentCloudCostService) {
+	                                                  final CloudCostService confluentCloudCostService) {
 		return new ConfluentKafkaShowBacksDemo(confluentCloudMetricService, confluentCloudServiceAccountCache, confluentCloudCostService);
 
 	}

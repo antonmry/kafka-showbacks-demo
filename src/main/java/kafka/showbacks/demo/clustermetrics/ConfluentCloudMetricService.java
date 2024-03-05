@@ -38,11 +38,6 @@ public class ConfluentCloudMetricService implements ClusterMetricService {
 	}
 
 	@Override
-	public ImmutableMap<Instant, BigDecimal> getPercentageOfUsageByClusterGroupByHour(final String clusterId, final Instant startInstant, final Instant endInstant) throws KafkaShowBackDemoException {
-		return getValueMetricByClusterIdGroupedByHour(MetricType.CLUSTER_LOAD_PERCENT, startInstant, endInstant, clusterId);
-	}
-
-	@Override
 	public ImmutableMap<Instant, BigDecimal> getReceiveBytesByClusterGroupByHour(String clusterId, Instant startInstant, Instant endInstant) throws KafkaShowBackDemoException {
 		return getValueMetricByClusterIdGroupedByHour(MetricType.RECEIVE_BYTES, startInstant, endInstant, clusterId);
 	}
@@ -50,11 +45,6 @@ public class ConfluentCloudMetricService implements ClusterMetricService {
 	@Override
 	public ImmutableMap<Instant, BigDecimal> getSendBytesByClusterGroupByHour(String clusterId, Instant startInstant, Instant endInstant) throws KafkaShowBackDemoException {
 		return getValueMetricByClusterIdGroupedByHour(MetricType.SEND_BYTES, startInstant, endInstant, clusterId);
-	}
-
-	@Override
-	public ImmutableMap<Instant, List<MetricInformation>> getRetainedBytesTopicGroupedByHour(String clusterId, Instant startInstant, Instant endInstant) throws KafkaShowBackDemoException {
-		return getMetricInformationByClusterIdGroupedByHour(MetricType.KAFKA_STORAGE, startInstant, endInstant, clusterId);
 	}
 
 	private static MetricBody.MetricBodyBuilder buildMetricBody(final MetricType metricType, final Instant startInstant, final Instant endInstant, final String clusterId) {
