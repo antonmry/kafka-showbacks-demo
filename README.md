@@ -31,7 +31,16 @@ use [Drop data using NerdGraph](https://docs.newrelic.com/docs/data-apis/manage-
 
 ### Environment variables
 
-### Demo mode / service mode
+- CONFLUENT_CLUSTER_LIST: ClusterId list with format [x,x,x]. This parameter is mandatory and has to include all the
+  Confluent clustersId that you want to obtain the cost.
+
+### Days
+
+By default, the KafkaShowBacksDemo service calculates the cost for the day before of the execution. You could launch the
+service to get the cost for more days changing the daysToExecute parameter
+in [server.yml](src/main/resources/server.yml) calculates more than 1 day before. Take into account that Confluent API
+has a
+limitation of 7 days before, so it's not possible to obtain the cost for more than 7 days.
 
 ## Setup
 

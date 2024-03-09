@@ -8,8 +8,9 @@ import io.dropwizard.core.setup.Environment;
 import kafka.showbacks.demo.configuration.KafkaShowBacksDemoConfiguration;
 
 class KafkaShowBackDemoApplication extends Application<KafkaShowBacksDemoConfiguration> {
-	//todo args demo mode
+
 	public static void main(String[] args) throws Exception {
+
 		new KafkaShowBackDemoApplication().run(args);
 	}
 
@@ -22,11 +23,9 @@ class KafkaShowBackDemoApplication extends Application<KafkaShowBacksDemoConfigu
 
 	@Override
 	public void run(KafkaShowBacksDemoConfiguration configuration, Environment environment) {
-
 		DaggerKafkaShowBacksDemoComponent.builder().
 				configuration(configuration)
 				.environment(environment)
-				.isDemoMode(false)
 				.build().buildKafkaShowBacksDemoService().startAsync();
 	}
 
