@@ -29,6 +29,9 @@ public class KafkaShowBacksDemoConfiguration extends Configuration {
 	@JsonProperty("newrelic")
 	private NR1Configuration nr1Configuration;
 
+	@JsonProperty("daysToExecute")
+	private int daysToExecute;
+
 	public int getRequestTimeOutInSeconds() {
 		return requestTimeOutInSeconds;
 	}
@@ -59,5 +62,9 @@ public class KafkaShowBacksDemoConfiguration extends Configuration {
 
 	public NR1Configuration getNr1Configuration() {
 		return nr1Configuration;
+	}
+
+	public int getDaysToExecute() {
+		return daysToExecute;
 	}
 }

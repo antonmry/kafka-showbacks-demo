@@ -23,9 +23,6 @@ public interface KafkaShowBacksDemoComponent {
 		Builder configuration(KafkaShowBacksDemoConfiguration configuration);
 
 		@BindsInstance
-		Builder isDemoMode(boolean isDemoMode);
-
-		@BindsInstance
 			//todo ??
 		Builder environment(Environment environment);
 

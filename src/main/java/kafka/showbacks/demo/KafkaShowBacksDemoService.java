@@ -16,11 +16,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-//todo protecte
-//todo singlenton
-//TODO CONFLUENT
-//todo check general design
-//TODO The query to fill the collection from cloud API return more than one page
 class KafkaShowBacksDemoService extends AbstractScheduledService {
 
 	private static final Logger log = LogManager.getLogger();
@@ -37,31 +32,30 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 
 	private final Set<String> clustersId;
 
-	//todo protect
 	@Inject
 	KafkaShowBacksDemoService(final KafkaShowBacksDemo kafkaShowBacksDemo,
-	                          final OutputDataService nr1OutputDataService,
+	                          final OutputDataService outputDataService,
 	                          final Set<String> clustersIdSet,
 	                          final long initialDelaySeconds,
 	                          final long periodInSeconds,
-	                          final boolean demoMode) {
+	                          final int daysToExecute) {
 		this.kafkaShowBacksDemo = kafkaShowBacksDemo;
-		this.nr1OutputDataService = nr1OutputDataService;
+		this.nr1OutputDataService = outputDataService;
 		this.clustersId = clustersIdSet;
 		this.initialDelayInSeconds = initialDelaySeconds;
 		this.periodInSeconds = periodInSeconds;
-		this.daysToSubtract = demoMode ? 7 : 1; //todo constants
+		this.daysToSubtract = daysToExecute;
 	}
 
 	@Override
-	protected void runOneIteration() {
+	protected void runOneIteration() throws KafkaShowBackDemoException {
 		log.info("Starting KafkaShowBacksDemoService.");
-		//todo check if we should remove one hour
+
 		final Set<ClusterCostData> costDataSet = getBillingDataForDate();
 
 		if (!costDataSet.isEmpty()) {
-			for (String clusterId : clustersId) { //todo ...
-				//todo if is empty recover all
+			for (String clusterId : clustersId) {
+
 				final Set<ClusterCostData> costDataByClusterId = costDataSet.stream()
 						.filter(clusterCostData -> StringUtils.equalsIgnoreCase(clusterCostData.clusterID(), clusterId))
 						.collect(Collectors.toSet());
@@ -74,7 +68,6 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 				} else {
 					log.warn("No cost founds for clusterId:{}", clusterId);
 				}
-
 			}
 
 		} else {
@@ -90,21 +83,20 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	}
 
 
-	private Set<ClusterCostData> getBillingDataForDate() {
-		//local date vs da
+	private Set<ClusterCostData> getBillingDataForDate() throws KafkaShowBackDemoException {
+
 		final LocalDate startDate = LocalDate.now().minusDays(this.daysToSubtract);
 		final LocalDate endDate = LocalDate.now();
 
 		log.info("Searching data billing from {} until {}.", startDate, endDate);
 
 		try {
-			//todo exception and type
 			return this.kafkaShowBacksDemo.getCostDataByDate(startDate, endDate);
 
 		} catch (KafkaShowBackDemoException kafkaShowBackDemoException) {
-			log.error("Error trying to get the billing by date.", kafkaShowBackDemoException);
+			log.error("Error trying to get the billing by date from startDate: {} until: {} ", startDate, endDate, kafkaShowBackDemoException);
+			throw kafkaShowBackDemoException;
 		}
-		return Collections.EMPTY_SET; //todo stop proccess
 	}
 
 	private Set<TeamCostData> getCostDividedByTeams(final Set<ClusterCostData> clusterCostDataSet) {

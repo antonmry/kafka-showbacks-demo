@@ -21,6 +21,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 //todo review configurations assigment
+//todo environment
 @Module(includes = KafkaShowBackDemoConfigurationModule.class)
 public interface KafkaShowBacksDemoModule {
 
@@ -76,9 +77,8 @@ public interface KafkaShowBacksDemoModule {
 	@Named("KafkaShowBacksDemoService") //todo to remove msk
 	static KafkaShowBacksDemoService KafkaShowBacksDemoService(@Named("confluentCloudShowBacks") final KafkaShowBacksDemo kafkaShowBacksDemo,
 	                                                           @Named("NR1OutputDataService") final OutputDataService outputDataService,
-	                                                           final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration,
-	                                                           final boolean isDemoMode) {
-		return new KafkaShowBacksDemoService(kafkaShowBacksDemo, outputDataService, kafkaShowBacksDemoConfiguration.getConfluentConfiguration().clustersIdList(), kafkaShowBacksDemoConfiguration.getInitialDelaySeconds(), kafkaShowBacksDemoConfiguration.getPeriodInSeconds(), isDemoMode);
+	                                                           final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
+		return new KafkaShowBacksDemoService(kafkaShowBacksDemo, outputDataService, kafkaShowBacksDemoConfiguration.getConfluentConfiguration().clustersIdList(), kafkaShowBacksDemoConfiguration.getInitialDelaySeconds(), kafkaShowBacksDemoConfiguration.getPeriodInSeconds(), kafkaShowBacksDemoConfiguration.getDaysToExecute());
 	}
 
 	/**

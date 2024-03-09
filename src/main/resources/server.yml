@@ -9,6 +9,7 @@ confluent:
 initialDelaySeconds: 10
 periodInSeconds: 86400
 requestTimeOutInSeconds: 30
+daysToExecute: 1
 
 newrelic:
   licenseApiKey: ${NR_LICENSE_API_KEY}
