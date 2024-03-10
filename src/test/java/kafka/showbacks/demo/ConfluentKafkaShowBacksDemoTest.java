@@ -42,10 +42,6 @@ public class ConfluentKafkaShowBacksDemoTest {
 	private static final String SERVICE_ACCOUNT_TEST_ID_2 = "sa-xxxx-2";
 	private static final String SERVICE_ACCOUNT_TEST_ID_3 = "sa-xxxx-3";
 
-	private static final String TOPIC_TEST_ID_1 = "topics-1";
-	private static final String TOPIC_TEST_ID_2 = "topics-2";
-	private static final String TOPIC_TEST_ID_3 = "topics-3";
-
 	private static final String ORGANIZATION_TEST_1 = "test_organization_1";
 	private static final String ORGANIZATION_TEST_2 = "test_organization_2";
 	private static final String ORGANIZATION_TEST_3 = "test_organization_3";
@@ -333,13 +329,6 @@ public class ConfluentKafkaShowBacksDemoTest {
 				List.of(new MetricInformation(SERVICE_ACCOUNT_TEST_ID_1, START_TIME_TEST, new BigDecimal("1000")),
 						new MetricInformation(SERVICE_ACCOUNT_TEST_ID_2, START_TIME_TEST, new BigDecimal("500")),
 						new MetricInformation(SERVICE_ACCOUNT_TEST_ID_3, START_TIME_TEST, new BigDecimal("2200"))));
-	}
-
-	private ImmutableMap<Instant, List<MetricInformation>> createDataTestBytesByTopic() {
-		return ImmutableMap.of(START_TIME_TEST,
-				List.of(new MetricInformation(TOPIC_TEST_ID_1, START_TIME_TEST, new BigDecimal("1000")),
-						new MetricInformation(TOPIC_TEST_ID_2, START_TIME_TEST, new BigDecimal("500")),
-						new MetricInformation(TOPIC_TEST_ID_3, START_TIME_TEST, new BigDecimal("2200"))));
 	}
 
 }
