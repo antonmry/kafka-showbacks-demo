@@ -20,17 +20,15 @@ import kafka.showbacks.demo.outputdata.OutputDataService;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-//todo review configurations assigment
-//todo environment
 @Module(includes = KafkaShowBackDemoConfigurationModule.class)
 public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton
-	@Named("confluentCloudCustomMetricClient") //todo configurations
-	static ClusterMetricClient confluentCloudCustomMetricClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoCongifuration, final RetryOnError retryOnError) {
-		return new ConfluentCloudMetricClient(kafkaShowBacksDemoCongifuration.getConfluentConfiguration().confluentApiKey(), kafkaShowBacksDemoCongifuration.getConfluentConfiguration().confluentApiSecret(),
-				kafkaShowBacksDemoCongifuration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoCongifuration.getConfluentConfiguration().telemetryUrl(), retryOnError);
+	@Named("confluentCloudCustomMetricClient")
+	static ClusterMetricClient confluentCloudCustomMetricClient(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
+		return new ConfluentCloudMetricClient(kafkaShowBacksDemoConfiguration.getConfluentConfiguration().confluentApiKey(), kafkaShowBacksDemoConfiguration.getConfluentConfiguration().confluentApiSecret(),
+				kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), kafkaShowBacksDemoConfiguration.getConfluentConfiguration().telemetryUrl(), retryOnError);
 	}
 
 	@Provides
@@ -48,7 +46,7 @@ public interface KafkaShowBacksDemoModule {
 	}
 
 	@Provides
-	@Singleton //todo singlenton ?? //todo configurations
+	@Singleton
 	static ConfluentCloudServiceClient confluentServiceAccountClient(final ConfluentConfiguration confluentConfiguration, final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
 		return new ConfluentCloudServiceClient(confluentConfiguration.confluentApiKey(), confluentConfiguration.confluentApiSecret(),
 				kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), retryOnError);
@@ -63,7 +61,7 @@ public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton
-	@Named("confluentCloudShowBacks") //todo add exemple to other kafka environment
+	@Named("confluentCloudShowBacks")
 	static KafkaShowBacksDemo confluentCloudShowBacks(@Named("confluentCloudMetricService") final ClusterMetricService confluentCloudMetricService,
 	                                                  final ConfluentCloudServiceAccountCache confluentCloudServiceAccountCache,
 	                                                  final CloudCostService confluentCloudCostService) {
@@ -74,10 +72,10 @@ public interface KafkaShowBacksDemoModule {
 
 	@Provides
 	@Singleton
-	@Named("KafkaShowBacksDemoService") //todo to remove msk
-	static KafkaShowBacksDemoService KafkaShowBacksDemoService(@Named("confluentCloudShowBacks") final KafkaShowBacksDemo kafkaShowBacksDemo,
-	                                                           @Named("NR1OutputDataService") final OutputDataService outputDataService,
-	                                                           final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
+	@Named("confluentKafkaShowBacksDemoService")
+	static KafkaShowBacksDemoService confluentKafkaShowBacksDemoService(@Named("confluentCloudShowBacks") final KafkaShowBacksDemo kafkaShowBacksDemo,
+	                                                                    @Named("NR1OutputDataService") final OutputDataService outputDataService,
+	                                                                    final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration) {
 		return new KafkaShowBacksDemoService(kafkaShowBacksDemo, outputDataService, kafkaShowBacksDemoConfiguration.getConfluentConfiguration().clustersIdList(), kafkaShowBacksDemoConfiguration.getInitialDelaySeconds(), kafkaShowBacksDemoConfiguration.getPeriodInSeconds(), kafkaShowBacksDemoConfiguration.getDaysToExecute());
 	}
 
@@ -109,12 +107,4 @@ public interface KafkaShowBacksDemoModule {
 	static OutputDataService getNR1OutputDataService(final KafkaShowBacksDemoConfiguration kafkaShowBacksDemoConfiguration, final RetryOnError retryOnError) {
 		return new NR1OutputDataService(kafkaShowBacksDemoConfiguration.getRequestTimeOutInSeconds(), retryOnError, kafkaShowBacksDemoConfiguration.getNr1Configuration());
 	}
-
-	//TODO IN ANOTHER MODULE WITH HEALTH CHECK
-	//todo ??
-	/*@Provides
-	@Singleton
-	static Set<Service> autoServices(final KafkaShowBacksDemoService kafkaShowBacksDemoService) {
-		return ImmutableSet.of(kafkaShowBacksDemoService);
-	}*/
 }

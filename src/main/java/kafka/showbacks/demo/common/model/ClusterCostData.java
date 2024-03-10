@@ -1,7 +1,5 @@
 package kafka.showbacks.demo.common.model;
 
-import kafka.showbacks.demo.CostType;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 

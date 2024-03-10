@@ -9,6 +9,7 @@ import kafka.showbacks.demo.clustermetrics.MetricInformation;
 import kafka.showbacks.demo.common.BigDecimalOperations;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
+import kafka.showbacks.demo.common.model.CostType;
 import kafka.showbacks.demo.common.model.TeamCostData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static kafka.showbacks.demo.CostType.KAFKA_NETWORK_READ;
-import static kafka.showbacks.demo.CostType.KAFKA_NETWORK_WRITE;
 import static kafka.showbacks.demo.common.BigDecimalOperations.IS_EQUAL_BIG_DECIMAL;
 import static kafka.showbacks.demo.common.BigDecimalOperations.IS_GREATER_BIG_DECIMAL;
 import static kafka.showbacks.demo.common.BigDecimalOperations.IS_LESS_BIG_DECIMAL;
@@ -36,6 +35,8 @@ import static kafka.showbacks.demo.common.BigDecimalOperations.getPercentage;
 import static kafka.showbacks.demo.common.BigDecimalOperations.getValueFromPercentage;
 import static kafka.showbacks.demo.common.BigDecimalOperations.multiply;
 import static kafka.showbacks.demo.common.BigDecimalOperations.subtract;
+import static kafka.showbacks.demo.common.model.CostType.KAFKA_NETWORK_READ;
+import static kafka.showbacks.demo.common.model.CostType.KAFKA_NETWORK_WRITE;
 
 //todo big class refactor
 //todo number classes study

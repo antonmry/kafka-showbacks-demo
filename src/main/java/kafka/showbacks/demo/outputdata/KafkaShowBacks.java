@@ -1,7 +1,7 @@
 package kafka.showbacks.demo.outputdata;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import kafka.showbacks.demo.CostType;
+import kafka.showbacks.demo.common.model.CostType;
 
 import java.math.BigDecimal;
 import java.time.Instant;
