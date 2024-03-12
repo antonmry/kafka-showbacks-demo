@@ -3,11 +3,13 @@ package kafka.showbacks.demo.outputdata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Iterables;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.TeamCostData;
 import kafka.showbacks.demo.common.rest.AbstractServiceClient;
+import kafka.showbacks.demo.common.rest.ResponseObject;
 import kafka.showbacks.demo.common.rest.RetryOnError;
 import kafka.showbacks.demo.configuration.NR1Configuration;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//todo review api limitations to do post
 //todo another intermediate class
 public final class NR1OutputDataService extends AbstractServiceClient implements OutputDataService {
 
@@ -49,7 +50,6 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 				CONTENT_ENCODING_GZIP_HEADER, CONTENT_ENCODING_GZIP_HEADER);
 	}
 
-	//todo kafkaProvider
 	@Override
 	public void sendOutputData(final Set<TeamCostData> teamCostDataSet, final String kafkaProvider) throws KafkaShowBackDemoException {
 		if (StringUtils.isEmpty(this.eventAPIUrl)) {
@@ -66,9 +66,15 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 
 					final HttpRequest httpRequest = createRequestPOSTBuilder(jsonPayload.get(),
 							this.eventAPIUrl);
-					//todo handle response
+
 					final String httpResponse = getHttpResponse(httpRequest).orElseThrow(
 							() -> new KafkaShowBackDemoException("The process to send data to N1 has failed."));
+
+					final ResultStoreData result = mapJsonStringToObjectResponse(ResultStoreData.class, httpResponse);
+
+					if (result.success) {
+						log.info("Transaction stored correctly with id {}", result.uuid);
+					}
 
 				} catch (KafkaShowBackDemoException kafkaShowBackDemoException) {
 					log.error("Error sending data to to NR1.", kafkaShowBackDemoException);
@@ -90,7 +96,6 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 		return mapKafkaShowBackToJson(kafkaShowBacksSet);
 	}
 
-	//todo static common class
 	private Optional<String> mapKafkaShowBackToJson(final Set<KafkaShowBacks> kafkaShowBacksSet) {
 		try {
 			return Optional.of(objectMapper.writeValueAsString(kafkaShowBacksSet));
@@ -98,5 +103,19 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 			log.error("Error mapping KafkaShowBackToJson.", jsonProcessingException);
 		}
 		return Optional.empty();
+	}
+
+	@JsonSerialize()
+	private record ResultStoreData(boolean success, String uuid) implements ResponseObject {
+
+		@Override
+		public boolean hasData() {
+			return false;
+		}
+
+		@Override
+		public boolean hasNextPages() {
+			return ResponseObject.super.hasNextPages();
+		}
 	}
 }
