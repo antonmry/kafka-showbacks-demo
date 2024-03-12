@@ -8,14 +8,12 @@ import kafka.showbacks.demo.configuration.KafkaShowBacksDemoConfiguration;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-//todo provacy
 @Singleton
 @Component(modules = KafkaShowBacksDemoModule.class)
-public interface KafkaShowBacksDemoComponent {
+interface KafkaShowBacksDemoComponent {
 
-	//todo confluent name
-	@Named("KafkaShowBacksDemoService")
-	KafkaShowBacksDemoService buildKafkaShowBacksDemoService();
+	@Named("confluentKafkaShowBacksDemoService")
+	KafkaShowBacksDemoService buildConfluentKafkaShowBacksDemoService();
 
 	@Component.Builder
 	interface Builder {
@@ -23,7 +21,6 @@ public interface KafkaShowBacksDemoComponent {
 		Builder configuration(KafkaShowBacksDemoConfiguration configuration);
 
 		@BindsInstance
-			//todo ??
 		Builder environment(Environment environment);
 
 		KafkaShowBacksDemoComponent build();

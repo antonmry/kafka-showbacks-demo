@@ -26,7 +26,7 @@ class KafkaShowBackDemoApplication extends Application<KafkaShowBacksDemoConfigu
 		DaggerKafkaShowBacksDemoComponent.builder().
 				configuration(configuration)
 				.environment(environment)
-				.build().buildKafkaShowBacksDemoService().startAsync();
+				.build().buildConfluentKafkaShowBacksDemoService().startAsync();
 	}
 
 

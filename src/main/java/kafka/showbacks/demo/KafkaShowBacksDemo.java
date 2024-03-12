@@ -13,14 +13,13 @@ import java.util.Set;
  * The idea is that we can use this interface in the case of include
  * another Kafka ecosystems
  */
-//todo name interface
 public interface KafkaShowBacksDemo {
 	/**
 	 * Return the billing data of Confluent extracted from Confluent API.
-	 * Currently this information just can be obtained by complete days and it's not possible
+	 * Currently, this information just can be obtained by complete days, and it's not possible
 	 * filter by cluster.
 	 */
-	Set<ClusterCostData> getCostDataByDate(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException; //todo now here will see if we should change it
+	Set<ClusterCostData> getCostDataByDate(final LocalDate startDate, final LocalDate endDate) throws KafkaShowBackDemoException;
 
 	/**
 	 * Return the calculated cost by team taking during the time range sent

@@ -2,10 +2,10 @@ package kafka.showbacks.demo.clouddata.billing;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
-import kafka.showbacks.demo.CostType;
 import kafka.showbacks.demo.clouddata.ConfluentCloudServiceClient;
 import kafka.showbacks.demo.common.exception.KafkaShowBackDemoException;
 import kafka.showbacks.demo.common.model.ClusterCostData;
+import kafka.showbacks.demo.common.model.CostType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,6 +1,5 @@
-package kafka.showbacks.demo;
+package kafka.showbacks.demo.common.model;
 
-//todo check correct place (models???)
 public enum CostType {
 	KAFKA_NUM_CKUS("KafkaNumCKUs"),
 	KAFKA_STORAGE("KafkaStorage"),
