@@ -3,11 +3,9 @@ plugins {
     id "application"
 }
 
-group 'org.example'
+group 'kafka.showbacks.demo'
 version '1.0-SNAPSHOT'
 
-//  source ../execute_before_demo.sh
-//./gradlew run --args='server src/main/resources/server.yml'
 application {
     mainClassName = "kafka.showbacks.demo.KafkaShowBackDemoApplication"
 }
@@ -15,15 +13,14 @@ application {
 repositories {
     mavenCentral()
 }
-//todo java properties
-//todo configuration
+
 dependencies {
     implementation 'com.google.guava:guava:33.0.0-jre'
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.0' //todo we need this for the jackson
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.0'
 
     implementation 'com.google.dagger:dagger:2.50'
     annotationProcessor "com.google.dagger:dagger-compiler:2.50"

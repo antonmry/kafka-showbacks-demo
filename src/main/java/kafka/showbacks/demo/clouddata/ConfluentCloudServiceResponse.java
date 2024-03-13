@@ -19,7 +19,7 @@ import java.util.Set;
 class ConfluentCloudServiceResponse implements ResponseObject {
 
 	private static final Logger log = LogManager.getLogger();
-	//todo
+
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	@JsonProperty("metadata")
@@ -38,14 +38,11 @@ class ConfluentCloudServiceResponse implements ResponseObject {
 		return metadata;
 	}
 
-	//todo review
-	//todo send class intsead of enum
-	//todo T?
 	<T extends ConfluentCloudDataItem> Set<T> getConfluentCloudDataItem(final TypeReference<Set<T>> typeReference) {
 		try {
 			return objectMapper.readValue(data.toString(), typeReference);
 		} catch (final JsonProcessingException jsonProcessingException) {
-			log.error("Error parsing data item", jsonProcessingException); //todo
+			log.error("Error parsing data item", jsonProcessingException);
 		}
 		return Collections.EMPTY_SET;
 	}
