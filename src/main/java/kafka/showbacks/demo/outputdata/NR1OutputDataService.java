@@ -23,15 +23,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//todo another intermediate class
 public final class NR1OutputDataService extends AbstractServiceClient implements OutputDataService {
 
 	private static final Logger log = LogManager.getLogger();
 
-	//todo configuration panel
 	private static final int LIMIT_NUMBER_OF_RECORDS_TO_SEND = 1_500;
 
-	//todo check
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	private final String eventType;
@@ -42,7 +39,7 @@ public final class NR1OutputDataService extends AbstractServiceClient implements
 	                            final RetryOnError retryOnError,
 	                            final NR1Configuration nr1Configuration) {
 		super(requestTimeOutInSeconds, retryOnError);
-		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); //??
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		objectMapper.registerModule(new JavaTimeModule());
 		this.eventType = nr1Configuration.eventType();
 		this.eventAPIUrl = nr1Configuration.eventApiUrl();

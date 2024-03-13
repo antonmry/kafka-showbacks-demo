@@ -38,8 +38,6 @@ import static kafka.showbacks.demo.common.BigDecimalOperations.subtract;
 import static kafka.showbacks.demo.common.model.CostType.KAFKA_NETWORK_READ;
 import static kafka.showbacks.demo.common.model.CostType.KAFKA_NETWORK_WRITE;
 
-//todo big class refactor
-//todo number classes study
 public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 
 	private static final Logger log = LogManager.getLogger();
@@ -300,7 +298,7 @@ public final class ConfluentKafkaShowBacksDemo implements KafkaShowBacksDemo {
 							clusterCostDataSet.stream()
 									.filter(clusterCostData -> clusterCostData.costType().equals(costType))
 									.collect(Collectors.groupingBy(ClusterCostData::clusterID)));
-				} catch (RuntimeException runtimeException) { //TODO
+				} catch (RuntimeException runtimeException) {
 					throw new KafkaShowBackDemoException("Error grouping by cluster & cost type.", runtimeException);
 				}
 			}

@@ -9,3 +9,4 @@ build/*
 logs
 logs/*
 .DS_Store
+/run_demo.sh

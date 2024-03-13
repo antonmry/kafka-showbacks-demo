@@ -22,7 +22,7 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 
 	private final KafkaShowBacksDemo kafkaShowBacksDemo;
 
-	private final OutputDataService nr1OutputDataService;
+	private final OutputDataService outputDataService;
 
 	private final long initialDelayInSeconds;
 
@@ -40,7 +40,7 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	                          final long periodInSeconds,
 	                          final int daysToExecute) {
 		this.kafkaShowBacksDemo = kafkaShowBacksDemo;
-		this.nr1OutputDataService = outputDataService;
+		this.outputDataService = outputDataService;
 		this.clustersId = clustersIdSet;
 		this.initialDelayInSeconds = initialDelaySeconds;
 		this.periodInSeconds = periodInSeconds;
@@ -112,7 +112,7 @@ class KafkaShowBacksDemoService extends AbstractScheduledService {
 	private void storeOutputData(final Set<TeamCostData> teamCostDataSet) {
 		log.info("Storing output data. Number of records: {}", teamCostDataSet.size());
 		try {
-			this.nr1OutputDataService.sendOutputData(teamCostDataSet, "Confluent");
+			this.outputDataService.sendOutputData(teamCostDataSet, "Confluent");
 		} catch (KafkaShowBackDemoException e) {
 			log.error("Error storing output data.", e);
 		}
