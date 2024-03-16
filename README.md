@@ -7,7 +7,7 @@ configurations.
 KafkaShowbacksDemo works with Kafka Confluent environment due that the Confluent Cloud provide a complete set of API to
 get the information that we need to calculate the costs. The costs calculated are sent to NewRelicDB.
 
-![](docs/arquitecture.png)
+![](docs/arquitecthure.png)
 
 ## Service account format
 
@@ -58,22 +58,25 @@ in [server.yml](src/main/resources/server.yml) calculates more than 1 day before
 has a
 limitation of 7 days before, so it's not possible to obtain the cost for more than 7 days.
 
-## Setup
+## Build Confluent environment with terraform
 
-### Create Confluent cluster with terraform
+In template folder you can find a set of template to build a Confluent environment with terraform, in the case that you
+need it:
 
-### Create service account & topics
-
-### Produce data
+- [Create dedicated cluster with terraform.](templates/create_cluster.tf)
+- [Create services account and Key API with](templates/create_sa.sh)
+- [Create topics](templates/create_topics.sh)
+- [Example of service account configuration file](templates/config_sa.properties)
+- [Script to generate data with different configurations](templates/generate_data_test.sh)
 
 ## Support links
 
 - Confluent:
-    - cli
-    - tools
-    - [Create a resource API Key](https://docs.confluent.io/cloud/current/access-management/authenticate/api-keys/api-keys.html#create-a-resource-api-key)
-    - [Service accounts](https://docs.confluent.io/cloud/current/access-management/identity/service-accounts.html)
-- Terraform
+  - [Kafka command cli](https://docs.confluent.io/confluent-cli/current/overview.html)
+  - [Kafka tools](https://docs.confluent.io/kafka/operations-tools/kafka-tools.html)
+  - [Create a resource API Key](https://docs.confluent.io/cloud/current/access-management/authenticate/api-keys/api-keys.html#create-a-resource-api-key)
+  - [Service accounts](https://docs.confluent.io/cloud/current/access-management/identity/service-accounts.html)
+- [Confluent Terraform provider](https://www.confluent.io/blog/confluent-terraform-provider-intro/?ajs_aid=81ed1b46-7507-4e17-acb4-e91a1aa4b742&ajs_uid=870042)
 - [Drop data using NerdGraph](https://docs.newrelic.com/docs/data-apis/manage-data/drop-data-using-nerdgraph/)
 
 
