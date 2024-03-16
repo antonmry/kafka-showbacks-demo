@@ -3,9 +3,6 @@ plugins {
     id "application"
 }
 
-group 'kafka.showbacks.demo'
-version '1.0-SNAPSHOT'
-
 application {
     mainClassName = "kafka.showbacks.demo.KafkaShowBackDemoApplication"
 }
@@ -15,30 +12,29 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:33.0.0-jre'
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.0'
+    implementation "com.google.guava:guava:${project['guava.version']}"
+    implementation "org.apache.commons:commons-lang3:${project['apache.version']}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${project['jackson.version']}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${project['jackson.version']}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${project['jackson.version']}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project['jackson.version']}"
+    implementation "com.github.ben-manes.caffeine:caffeine:${project['caffeine.version']}"
 
-    implementation 'com.google.dagger:dagger:2.50'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.50"
+    implementation "com.google.dagger:dagger:${project['dagger2.version']}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${project['dagger2.version']}"
+    implementation "io.dropwizard:dropwizard-core:${project['dropwizard.version']}"
 
-    implementation 'org.apache.logging.log4j:log4j-api:2.22.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.22.1'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.22.1'
+    implementation "org.apache.logging.log4j:log4j-api:${project['log4j.version']}"
+    implementation "org.apache.logging.log4j:log4j-core:${project['log4j.version']}"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:${project['log4j.version']}"
 
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
-    implementation 'io.dropwizard:dropwizard-core:4.0.5'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testImplementation "org.mockito:mockito-core:5.4.0"
-    testImplementation "org.mock-server:mockserver-netty:5.14.0"
-    testImplementation "org.mock-server:mockserver-client-java:5.14.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${project['jupiter.version']}"
+    testImplementation "org.mockito:mockito-core:${project['mockito.version']}"
+    testImplementation "org.mock-server:mockserver-netty:${project['mockserver.version']}"
+    testImplementation "org.mock-server:mockserver-client-java:${project['mockserver.version']}"
     testImplementation "org.mock-server:mockserver-junit-jupiter-no-dependencies:5.14.0"
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project['jupiter.version']}"
 }
 
 test {
